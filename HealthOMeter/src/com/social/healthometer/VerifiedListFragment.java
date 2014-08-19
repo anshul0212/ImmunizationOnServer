@@ -107,33 +107,7 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	  mylistview.setOnItemClickListener(this);
 	 
 	 
-	  
-	  try
-		{
-		  mClient = new MobileServiceClient(
-					 "https://vaccineproapp.azure-mobile.net/",
-				      "AKuNBrSjWykyVFDZFWmwECbDlyfjvt98",
-					this.getActivity());
-		//ShowMessage("Success", mClient.get);
-				
-		mToDoTable = mClient.getTable(TodoItem.class);
-		if(mToDoTable != null)
-		{
-			ready = true;
-		//	ShowMessage("Success", "MobileServiceClient created ii successfully");
-		}
-		else
-		{
-			ready = false;
-			ShowMessage("Failed", "Cannot create MobileServiceClient");
-		}
-			
-		}
-		catch(MalformedURLException ex)
-		{
-			ready = false;
-			ShowMessage("Exception", "Cannot create MobileServiceClient");
-		}
+	
 		
 		refreshItemsFromTable();
 	  

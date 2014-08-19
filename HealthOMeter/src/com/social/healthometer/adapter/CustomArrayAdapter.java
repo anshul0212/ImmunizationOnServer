@@ -180,7 +180,7 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	   
 	    genderText.setText(items.get(position).getSex());
 	    // mob_num.setText(items.get(position).getMobileNumber());
-	     mob_num.setText(items.get(position).getRegCode());
+	     mob_num.setText(items.get(position).getReg_code());
 	    code.setText(items.get(position).getNotifyNumber());
 	  
 	

@@ -82,6 +82,7 @@ protected void onCreate(Bundle savedInstanceState) {
 	if (ViewDetailFragment.ITEM_TO_EDIT!=null) {
 		addDetailsFragment.setItem(ViewDetailFragment.ITEM_TO_EDIT);
 
+		//date_of_birth_text
 		ViewDetailFragment.ITEM_TO_EDIT=null;
 	}
 	

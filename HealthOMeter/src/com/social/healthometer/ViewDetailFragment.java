@@ -3,7 +3,12 @@ import static com.microsoft.windowsazure.mobileservices.MobileServiceQueryOperat
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -14,6 +19,7 @@ import android.app.FragmentTransaction;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -28,8 +34,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView.OnGroupCollapseListener;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import android.widget.ExpandableListView;
 import android.widget.ListView;
 
@@ -43,6 +50,8 @@ import com.social.healthometer.adapter.CustomArrayAdapter;
 import com.social.healthometer.adapter.ExpandableListAdapter;
 import com.social.healthometer.model.TodoItem;
 import com.social.healthometer.model.SearchFilterItem;
+import com.social.utilities.ServiceHandler;
+
 import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.ExpandableListView.OnGroupClickListener;
 
@@ -144,6 +153,30 @@ public class ViewDetailFragment extends Activity {
 			});	
 	        
 	    
+			 ImageView imgExpandContract = (ImageView)findViewById(R.id.toggleImage);
+			 imgExpandContract.setBackgroundResource(R.drawable.ic_maximized);
+			   		
+			 imgExpandContract.setOnClickListener(new OnClickListener() {
+		   		  @Override
+				  public void onClick(View cv)
+		     	  {
+		   			
+		   			  LinearLayout contactLayout = (LinearLayout)findViewById(R.id.frameFilters);
+		   			  if(contactLayout.getVisibility() == View.VISIBLE)
+		   			  {
+		   				  contactLayout.setVisibility(View.GONE);
+		   				cv.setBackgroundResource(R.drawable.ic_minimized);
+		   		   		
+		   			
+		   			  }
+		   			  else
+		   			  {
+		   				contactLayout.setVisibility(View.VISIBLE);
+		   				cv.setBackgroundResource(R.drawable.ic_maximized);
+		   			  }
+		   				
+				  }
+			  });    
 	   
 
 	       
@@ -160,14 +193,8 @@ public class ViewDetailFragment extends Activity {
 		   searchButton.setOnClickListener(
 			        new Button.OnClickListener() {
 			        	public void onClick(View v) {
-			        		// Log.d("count="+adapter.getGroupCount(), "id="+adapter.getGroupView(0, true, convertView, parent));
-			                	  // Code to be performed when 
-						  // the button is clicked
-			        		EditText editTextName = (EditText)findViewById(R.id.txtSearchName_id);
-			        		String Name = editTextName.getText().toString();
-			        		 EditText editTextPhone =(EditText)findViewById(R.id.txtSearchPhone_id);
-			        		 String Phone = editTextPhone.getText().toString();
-			        		SearchClicked(v,Name,Phone);
+			        	
+			        		SearchClicked();
 			        		}
 			        	}
 			        );
@@ -198,34 +225,7 @@ public class ViewDetailFragment extends Activity {
 			}catch( Exception ee){
 				ShowMessage("ListView", "Exception:"+ee);
 			}
-			try
-			{
-				  mClient = new MobileServiceClient(
-							 "https://vaccineproapp.azure-mobile.net/",
-						      "AKuNBrSjWykyVFDZFWmwECbDlyfjvt98",
-							this);
-						
-			//ShowMessage("Success", mClient.get);
-					
-			mToDoTable = mClient.getTable(TodoItem.class);
-			if(mToDoTable != null)
-			{
-				ready = true;
-				//ShowMessage("Success", "MobileServiceClient created successfully");
-			}
-			else
-			{
-				ready = false;
-				ShowMessage("Failed", "Cannot create MobileServiceClient");
-			}
-				
-			}
-			catch(MalformedURLException ex)
-			{
-				ready = false;
-				ShowMessage("Exception", "Cannot create MobileServiceClient");
-			}
-		
+			
 			
 			refreshItemsFromTable();
 			
@@ -235,97 +235,191 @@ public class ViewDetailFragment extends Activity {
 	
 	
 	
-	public void SearchClicked(View view,String Name,String Phone)
+	public void SearchClicked()
 	{
-		String nameToBeSearched;
-		String phoneToBeSearched;
-		MobileServiceQuery<TableQueryCallback<TodoItem>> msq;
-		if(Name.length() <= 0 && Phone.length() >= 0 )
-		{
-			phoneToBeSearched = Phone;
-			msq = mToDoTable.where().field("notify_num").eq(phoneToBeSearched);
-			
-		}
-		else
-		if(Phone.length() <= 0 && Name.length() >= 0)
-		{
-			nameToBeSearched = Name;
-		    msq = mToDoTable.where().field("ChildName").eq(nameToBeSearched);
-			
-		}
-		else
-			if(Phone.length() >= 0 && Name.length() >= 0)
-			{
-				nameToBeSearched = Name;
-				phoneToBeSearched = Phone;
-				msq = mToDoTable.where().field("ChildName").and().field("notify_num").eq(phoneToBeSearched).eq(nameToBeSearched);
-				
-			}
-			else
-			{
-				return;
-			}
-
-
-	//	mToDoTable.where().field("text").eq(nameToBeSearched).execute(new TableQueryCallback<ToDoItem>()
-	
-	msq.execute(new TableQueryCallback<TodoItem>() {
-
-			public void onCompleted(List<TodoItem> result, int count, Exception exception, ServiceFilterResponse response) {
-				
-			//	ShowMessage("Sucess", result.get(0).toString());
-				if (exception == null) {
-					customArrayAdapter.clear();
-					//ShowMessage("Sucess", "Found");
-					for (TodoItem item : result) {
-						
-						
-						customArrayAdapter.add(item);
-						customArrayAdapter.notifyDataSetChanged();
-					}
-					//ShowMessage("Sucess", "Record Found");
-
-				} else {
-					ShowMessage("Error", exception.toString());
-				}
-			}
-		});
-		
-		
+		PopulateSearchedDetails populateSearchedDetails = new PopulateSearchedDetails();
+		populateSearchedDetails.execute();
 
 		
 		
 	}
 	
-	public void checkItem(TodoItem item) {
-		if (mClient == null) {
-			return;
-		}
-
-		// Set the item as completed and update it in the table
-		item.setComplete(true);
+	  private class PopulateSearchedDetails extends AsyncTask<Void, Void, Void> 
+	    {
+	    	 ArrayList<TodoItem> arrayItem = new ArrayList<TodoItem>();
+	            String url_add_beneficiary, name, notifyNum;
+	    	// ProgressDialog pDialog= new ProgressDialog(context);
+	    	@Override
+	        protected void onPreExecute() {
+	            super.onPreExecute();
+	            
+	          //  createProgress();
+	    
+	    	}
 		
-		mToDoTable.update(item, new TableOperationCallback<TodoItem>() {
+	        @Override
+	        protected Void doInBackground(Void... arg0) 
+	        {
+	            // Creating service handler class instance
+	            ServiceHandler sh = new ServiceHandler();
+	          
+	            // Making a request to url and getting response
+	        
+	            url_add_beneficiary = getString(R.string.url_add_beneficiary);
+	        	
+		    	EditText etName = (EditText)findViewById(R.id.txtSearchName_id);
+		    	
+		    	
+	            name = (etName).getText().toString();
+	            notifyNum = ((EditText)findViewById(R.id.txtSearchPhone_id)).getText().toString();
+	      
+	            if(name.length() <= 0 && notifyNum.length() >= 0 )
+	    		{
 
-			public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) {
-				if (exception == null) {	
-					if (entity.isComplete()) {
-						customArrayAdapter.remove(entity);
-					}
-				} else {
-					ShowMessage("exception", exception.toString());
-				}
-			}
+		            url_add_beneficiary = url_add_beneficiary+"?notif_num="+notifyNum;
+	    		}
+	    		else
+	    		if(notifyNum.length() <= 0 && name.length() >= 0)
+	    		{
 
-		});
-	}
+		            url_add_beneficiary = url_add_beneficiary+"?name="+name;
+	    			
+	    		}
+	    		else
+	    			if(notifyNum.length() >= 0 && name.length() >= 0)
+	    			{
+
+	    	            url_add_beneficiary = url_add_beneficiary+"?name="+name+"&notif_num="+notifyNum;
+	    			}
+	    			else
+	    			{
+	    				
+	    			}
+	            
+	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
+	            
+	            Log.d("Response: ", "> " + jsonStr);
+	           
+	           
+	            		
+	            if (jsonStr != null) {
+	                try {
+	                	JSONArray jArray = new JSONArray(jsonStr);
+	                     
+	                	  Log.d("jArray: ", "> " + jArray.toString());
+	                      
+	                	  Log.d("jArray.length(): ", "> " + jArray.length());
+	                	for(int i=0; i<jArray.length() ; i++)
+	                	{
+	                		JSONObject c = jArray.getJSONObject(i);
+	                		 TodoItem item = new TodoItem();
+	                   
+	                		 /*
+	                		  * name
+								notif_num
+								dob
+								sex
+								gaurdian_name
+								language
+								hw_num
+								
+								{
+  "notify_number": "9390681183",
+  "health_worker_phone": "9390681183",
+  "sex": "M",
+  "gaurdian_name": "mahesh",
+  "lang": "HIN",
+  "reg_code": 7799,
+  "ModifiedOn": "2014-08-19T17:04:21Z",
+  "name": "suresh",
+  "dob": "2014-08-15",
+  "is_verified": false,
+  "Id": "p8otBedSSMOdKAPoaO1JiQ"
+}
+	                		  */
+	                		 String name = c.getString("name");
+	                		 String dob = c.getString("dob");    
+	                		 String notify_number = c.getString("notify_number");
+	                		 String health_worker_phone = c.getString("health_worker_phone");    
+	                		 String sex = c.getString("sex");
+	                		 String gaurdian_name = c.getString("gaurdian_name");    
+	                		 String lang = c.getString("lang");
+	                		 String reg_code = c.getString("reg_code");    
+	                		 String ModifiedOn = c.getString("ModifiedOn");
+	                		 String is_verified = c.getString("is_verified");    
+	                		 String Id = c.getString("Id");
+	                		 
+	                		 item.setDateOfBirth(dob.toString());
+	                		 item.setText(name);
+	                		 item.setNotifyNumber(notify_number);
+	                		 item.setHw_number(health_worker_phone);
+	                		 item.setSex(sex);
+	                		 item.setGaurdian_name(gaurdian_name);
+	                		 item.setLang(lang);
+	                		 item.setReg_code(reg_code);
+	                		 item.setModifiedOn(ModifiedOn);
+	                		 item.setIs_verified(is_verified);
+	                		 item.setId(Id);
+	                		 
+	                		 
+	                		 
+	                		 
+	                        arrayItem.add(item);
+	                        Log.d("itemgetText: ", "> " + item.getText());
+	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
+	                    //    customArrayAdapter.add(item);
+	                	}
+	                } catch (JSONException e) {
+	                    e.printStackTrace();
+	                }  
+	            } else {
+	                Log.e("ServiceHandler", "Couldn't get any data from the url");
+	            }
+	            
+	            
+	            return null;    
+	        }
+		     
+		    @Override
+		    protected void onPostExecute(Void result) {
+		    
+		    	super.onPostExecute(result);
+		    	 Log.d("arrayItem: ", "> " + arrayItem);
+		    	 Iterator<TodoItem> itr =  arrayItem.iterator();
+		    	 
+		    	int er =0;
+		    	while(itr.hasNext())
+		    	{
+		    	// Log.d("arrayItem: ", "> " +);
+		    	// er++;
+		    		customArrayAdapter.add(itr.next());
+		    	}
+		    	
+		    	
+		    	 
+		    	//
+		    	//customArrayAdapter.notifyDataSetChanged();	  
+		    	/*
+		    	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+		    	etName.setText(user.get("name"));
+		    	
+		    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth);
+		    	etDate.setText(user.get("dob"));
+		    	//dismissProgress();
+		    	*/
+		    }    
+	    }
+
 
 	
 	private void refreshItemsFromTable() {
 
 		// Get the items that weren't marked as completed and add them in the
 		// adapter
-		mToDoTable.where().field("complete").eq(val(false)).execute(new TableQueryCallback<TodoItem>() {
+		/*
+		 *
+		 * mToDoTable.where().field("complete").eq(val(false)).execute(new TableQueryCallback<TodoItem>() {
+		 
 
 			public void onCompleted(List<TodoItem> result, int count, Exception exception, ServiceFilterResponse response) {
 				if (exception == null) {
@@ -340,6 +434,7 @@ public class ViewDetailFragment extends Activity {
 				}
 			}
 		});
+		*/
 	}
 
 	

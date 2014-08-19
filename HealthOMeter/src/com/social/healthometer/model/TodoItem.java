@@ -8,58 +8,25 @@ import java.sql.Date;
  */
 public class TodoItem {
 
-	/**
-	 * Item text
-	 */
-	@com.google.gson.annotations.SerializedName("ChildName")
 	private String mText;
-	
-	@com.google.gson.annotations.SerializedName("sex")
 	private String mSex;
-	
-	@com.google.gson.annotations.SerializedName("DOB")
 	private String mDOB;
-
-	@com.google.gson.annotations.SerializedName("RegCode")
-	private String regCode;
-	
-	@com.google.gson.annotations.SerializedName("notify_num")
+	private String hw_number;
+	private String gaurdian_name;
+	private String lang;
+	private String reg_code;
+	private String ModifiedOn;
+	private String is_verified;
 	private String mNotifyNumber;
-	
-	/**
-	 * Item Id
-	 */
-	@com.google.gson.annotations.SerializedName("id")
 	private String mId;
-
-	/**
-	 * Indicates if the item is completed
-	 */
-	@com.google.gson.annotations.SerializedName("complete")
 	private boolean mComplete;
 
-	//private boolean codeFocus ;
 	/**
 	 * ToDoItem constructor
 	 */
 	public TodoItem() {
 
 	}
-	
-	
-     
-	 public boolean isChecked() {
-         return checkbox;
-     }
-
-     public void setChecked(boolean checkbox) {
-         this.checkbox = checkbox;
-     }
-
-	private boolean checkbox = false;
-	public void toggleChecked() {
-		checkbox = !checkbox;
-    }
 	
 
 	/**
@@ -74,6 +41,92 @@ public class TodoItem {
 		this.setText(text);
 		this.setId(id);
 	}
+	
+	public String getHw_number() {
+		return hw_number;
+	}
+
+
+
+	public void setHw_number(String hw_number) {
+		this.hw_number = hw_number;
+	}
+
+
+
+	public String getGaurdian_name() {
+		return gaurdian_name;
+	}
+
+
+
+	public void setGaurdian_name(String gaurdian_name) {
+		this.gaurdian_name = gaurdian_name;
+	}
+
+
+
+	public String getLang() {
+		return lang;
+	}
+
+
+
+	public void setLang(String lang) {
+		this.lang = lang;
+	}
+
+
+
+	public String getReg_code() {
+		return reg_code;
+	}
+
+
+
+	public void setReg_code(String reg_code) {
+		this.reg_code = reg_code;
+	}
+
+
+
+	public String getModifiedOn() {
+		return ModifiedOn;
+	}
+
+
+
+	public void setModifiedOn(String modifiedOn) {
+		ModifiedOn = modifiedOn;
+	}
+
+
+
+	public String getIs_verified() {
+		return is_verified;
+	}
+
+
+
+	public void setIs_verified(String is_verified) {
+		this.is_verified = is_verified;
+	}
+
+
+	 public boolean isChecked() {
+         return checkbox;
+     }
+
+     public void setChecked(boolean checkbox) {
+         this.checkbox = checkbox;
+     }
+
+	private boolean checkbox = false;
+	public void toggleChecked() {
+		checkbox = !checkbox;
+    }
+	
+
 
 	/**
 	 * Returns the item text
@@ -108,13 +161,7 @@ public class TodoItem {
 		return mNotifyNumber;
 	}
 	
-	public final void setRegCode(String number) {
-		regCode = number;
-	}
 	
-	public String getRegCode() {
-		return regCode;
-	}
 	
 	public final void setMobileNumber(String number) {
 		mNotifyNumber = number;

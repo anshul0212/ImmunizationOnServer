@@ -37,12 +37,14 @@ import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -115,7 +117,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     private class GetProfileDetails extends AsyncTask<Void, Void, Void> 
     {
     	HashMap<String, String> user;
-    	String name, dob;
+    	String name, dob , notify_num;
     	// ProgressDialog pDialog= new ProgressDialog(context);
     	@Override
         protected void onPreExecute() {
@@ -150,9 +152,57 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
         protected Void doInBackground(Void... arg0) 
         {
         	
+        	
+        	Button submitButton1 = (Button)getActivity().findViewById(R.id.button1);
+    		if(submitButton1.getText().toString().contentEquals("Update?"))
+    		{
+
+    			nameEditText.setEnabled(true);
+    			maleRadioButton.setEnabled(true);
+    			femaleRadioButton.setEnabled(true);
+    			dateOfbirth.setEnabled(true);
+    			cellNoEditText.setEnabled(true);
+    			submitButton1.setText("Submit");
+    		}
+    		else
+    			if(submitButton1.getText().toString().contentEquals("Update?"))
+        		{
+    				if(item!=null)
+    				{
+    					 namePrev = nameEditText.getText().toString();
+    					 dobPrev = dateOfbirth.getText().toString();
+    					 cellNoPrev =cellNoEditText.getText().toString();;
+    						
+    				      String  dateOfbirth=((EditText)getActivity().findViewById(R.id.date_of_birth_text)).getText().toString();
+    				       // maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
+    				       // femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
+    				      String  nameEditText = ((EditText)getActivity().findViewById(R.id.enter_name_text)).getText().toString();
+    				    String	cellNoEditText = ((EditText)getActivity().findViewById(R.id.phone_num_text)).getText().toString();
+    				    	
+    				    	
+    					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoEditText))
+    					{return null;}
+    					else
+    						{
+    						url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
+    						
+    						
+    						}
+    				}
+    				else{
+    					url_add_beneficiary = url_add_beneficiary;
+    					//SubmitClicked(v);
+    				}
+
+    		
+    		}
+    		 
       
         	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
 	    	name = etName.getText().toString();
+	    	
+	    	EditText etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
+	    	notify_num = etNotifyNum.getText().toString();
 	    	
 	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
 	    	dob = etDate.getText().toString();
@@ -182,9 +232,10 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
             //nameValuePair.add(new BasicNameValuePair("Id", "1"));
             nameValuePair.add(new BasicNameValuePair("name", name));
-           nameValuePair.add(new BasicNameValuePair("notify_num", "232323"));
+           nameValuePair.add(new BasicNameValuePair("notif_num", notify_num));
             nameValuePair.add(new BasicNameValuePair("dob", dob));
       		
+            
             String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
             
             Log.d("Response: ", "> " + jsonStr);
@@ -218,11 +269,20 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    
 	    	super.onPostExecute(result);
 	    	
-	    	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-	    	etName.setText(user.get("name"));
+	    	if(user.isEmpty())
+	    	{
+	    		
+	    	}
+	    	else
+	    	{
+	    		EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+	    		if(user.containsKey("name"))
+	    		etName.setText(user.get("name"));
 	    	
-	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
-	    	etDate.setText(user.get("dob"));
+	    		EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    		if(user.containsKey("dob"))
+	    		etDate.setText(user.get("dob"));
+	    	}
 	    	dismissProgress();
 	    	
 	    }    
@@ -230,7 +290,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     
     ////////////
     
-    
+    String namePrev , dobPrev , cellNoPrev ;
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -257,6 +317,9 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     	imm.hideSoftInputFromInputMethod(dateOfbirth.getWindowToken(),0);
         dateOfbirth.setInputType(InputType.TYPE_DATETIME_VARIATION_NORMAL);
     	  dateOfbirth.setOnClickListener(this);
+    	  
+    	
+    	  
     	  maleRadioButton.setOnClickListener(
     		        new RadioButton.OnClickListener() {
     		        	public void onClick(View v) {
@@ -283,7 +346,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     		        	public void onClick(View v) {
     		                	  // Code to be performed when 
     					  // the button is clicked
-    		        		 SubmitClicked(v);
+    		        		SubmitClicked(v);
     		        		}
     		        	}
     		        );
@@ -326,6 +389,10 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 			
 			dateOfbirth.setText(item.getDateOfBirth().toString());
 			cellNoEditText.setText(item.getMobileNumber());
+			
+		 namePrev = nameEditText.getText().toString();
+		 dobPrev = dateOfbirth.getText().toString();
+		 cellNoPrev =cellNoEditText.getText().toString();;
 			
 			nameEditText.setEnabled(false);
 			maleRadioButton.setEnabled(false);
@@ -416,9 +483,17 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	   
 	}
 	
-	
+	public void updateInfo()
+	{
+		
+		
+	}
 	public void SubmitClicked(View view)
 	{
+		
+		
+		Log.d("update clickced", "msg:");
+		
 		GetProfileDetails addBenificiary = new GetProfileDetails();
 		addBenificiary.execute();
 		

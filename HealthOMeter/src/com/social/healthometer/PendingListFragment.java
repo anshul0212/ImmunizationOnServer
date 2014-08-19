@@ -2,7 +2,10 @@ package com.social.healthometer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,6 +42,8 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ListView;
 import android.widget.Toast;
 //import android.widget.AdapterView.OnItemClickListener;
+
+
 
 
 
@@ -158,12 +163,56 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	public static TodoItem ITEM_TO_EDIT = null;
 
 	 
+	private class VerifyRecords extends AsyncTask<Void , Void , Void>
+	{
+        String url_add_beneficiary ;
+		@Override
+		protected Void doInBackground(Void... arg0) {
+			// TODO Auto-generated method stub
+			 // Creating service handler class instance
+            ServiceHandler sh = new ServiceHandler();
+          
+             url_add_beneficiary = getString(R.string.url_add_beneficiary);
+    		
+            
+            String id = PendingListFragment.ITEM_TO_EDIT.getId();
+            
+            Log.d("id========",id);
+            // Making a request to url and getting response
+            
+            url_add_beneficiary = url_add_beneficiary+id+"/";
+            
+            Log.d("url_add_beneficiary1",url_add_beneficiary);
+            
+            
+            // Building post parameters, key and value pair
+               List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
+               //nameValuePair.add(new BasicNameValuePair("Id", "1"));
+               
+               nameValuePair.add(new BasicNameValuePair("is_verified", "1"));
+             
+               Log.d("url_add_beneficiary2",url_add_beneficiary);
+            
+            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST , nameValuePair) ;
+            
+            Log.d("Response: ", "> " + jsonStr);
+           
+			
+			return null;
+		}
+		
+		
+	}
 	
 		//public void SaveClicked(String nameEditText ,String cellNoEditText, String sex )
 		public void SaveClicked(TodoItem item  )
 		{
 			ITEM_TO_EDIT = item;
 		
+			VerifyRecords verifyRecords = new VerifyRecords();
+			verifyRecords.execute();
+			
+			/*
 			PendingListFragment.ITEM_TO_EDIT.setComplete(true);
 			//ShowMessage("exception", ViewDetailFragment.ITEM_TO_EDIT.toString());  
 			 
@@ -182,7 +231,7 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 			            }
 			      }
 			      });
-			
+			*/
 		}
 		
 		
@@ -217,6 +266,8 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	          
 	            // Making a request to url and getting response
 	            Log.d("url_add_beneficiary",url_add_beneficiary);
+	        	
+	   		 
 	            url_add_beneficiary = url_add_beneficiary+"?is_verified=0";
 	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
@@ -236,11 +287,56 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	                		JSONObject c = jArray.getJSONObject(i);
 	                		 TodoItem item = new TodoItem();
 	                   
-	                        String name = c.getString("name");
-	                        String dob = c.getString("dob");             
-	                        
-	                        item.setDateOfBirth(dob.toString());
-	                        item.setText(name);
+	                		 /*
+	                		  * name
+								notif_num
+								dob
+								sex
+								gaurdian_name
+								language
+								hw_num
+								
+								{
+    "notify_number": "9390681183",
+    "health_worker_phone": "9390681183",
+    "sex": "M",
+    "gaurdian_name": "mahesh",
+    "lang": "HIN",
+    "reg_code": 7799,
+    "ModifiedOn": "2014-08-19T17:04:21Z",
+    "name": "suresh",
+    "dob": "2014-08-15",
+    "is_verified": false,
+    "Id": "p8otBedSSMOdKAPoaO1JiQ"
+}
+	                		  */
+	                		 String name = c.getString("name");
+	                		 String dob = c.getString("dob");    
+	                		 String notify_number = c.getString("notify_number");
+	                		 String health_worker_phone = c.getString("health_worker_phone");    
+	                		 String sex = c.getString("sex");
+	                		 String gaurdian_name = c.getString("gaurdian_name");    
+	                		 String lang = c.getString("lang");
+	                		 String reg_code = c.getString("reg_code");    
+	                		 String ModifiedOn = c.getString("ModifiedOn");
+	                		 String is_verified = c.getString("is_verified");    
+	                		 String Id = c.getString("Id");
+	                		 
+	                		 item.setDateOfBirth(dob.toString());
+	                		 item.setText(name);
+	                		 item.setNotifyNumber(notify_number);
+	                		 item.setHw_number(health_worker_phone);
+	                		 item.setSex(sex);
+	                		 item.setGaurdian_name(gaurdian_name);
+	                		 item.setLang(lang);
+	                		 item.setReg_code(reg_code);
+	                		 item.setModifiedOn(ModifiedOn);
+	                		 item.setIs_verified(is_verified);
+	                		 item.setId(Id);
+	                		 
+	                		 
+	                		 
+	                		 
 	                        arrayItem.add(item);
 	                        Log.d("itemgetText: ", "> " + item.getText());
 	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
