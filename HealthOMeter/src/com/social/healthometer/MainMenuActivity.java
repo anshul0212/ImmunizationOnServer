@@ -13,6 +13,7 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 
 public class MainMenuActivity extends Activity {
 
@@ -21,6 +22,9 @@ public class MainMenuActivity extends Activity {
     private Button btnVerify;
     private Button btnSettings;
     private OnClickListener onClickListener;
+    private SharedPreferences sharedP;
+	
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

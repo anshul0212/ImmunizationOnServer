@@ -42,6 +42,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -64,6 +65,10 @@ import android.widget.Toast;
 public class FragmentAddDetails extends Fragment implements OnDateSetListener,OnTouchListener,OnClickListener  {
 	 private ProgressBar spinner;
 	 
+	 TelephonyManager telephonyManager;
+		
+	 String namePrev , dobPrev , cellNoPrev ;
+		String deviceNum , imei;
 	private MobileServiceClient mClient;
 	private Boolean ready;
 	RadioButton maleRadioButton;
@@ -105,19 +110,57 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		
 		url_add_beneficiary = getString(R.string.url_add_beneficiary);
 		
-		 
+	      
+			//Log.d("deviceNum", deviceNum);
 		
 		return rootView;
 	}
 	
     
     /////////
+	public void SubmitClicked(View view)
+	{
+		Button submitButton1 = (Button)getActivity().findViewById(R.id.button1);
+		
+		Button deleteButton = (Button)getActivity().findViewById(R.id.btn_deleteId);
+		
+		if(submitButton1.getText().toString().contentEquals("Edit"))
+		{
+			deleteButton.setVisibility(View.VISIBLE);
+			nameEditText.setEnabled(true);
+			maleRadioButton.setEnabled(true);
+			femaleRadioButton.setEnabled(true);
+			dateOfbirth.setEnabled(true);
+			cellNoEditText.setEnabled(true);
+			submitButton1.setText("Submit");
+		}
+		else
+		{
+		Log.d("update clickced", "msg:");
+		
+		GetProfileDetails addBenificiary = new GetProfileDetails();
+		addBenificiary.execute();
+		
+		if(item !=null)
+		{
+			nameEditText.setEnabled(false);
+			maleRadioButton.setEnabled(false);
+			femaleRadioButton.setEnabled(false);
+			dateOfbirth.setEnabled(false);
+			cellNoEditText.setEnabled(false);
+			submitButton1.setText("Edit");
+			deleteButton.setVisibility(View.GONE);
+		}
+		}
+		
+	}
+
     
     
     private class GetProfileDetails extends AsyncTask<Void, Void, Void> 
     {
     	HashMap<String, String> user;
-    	String name, dob , notify_num;
+    	String name, dob , notify_num, sex , hw_number;
     	// ProgressDialog pDialog= new ProgressDialog(context);
     	@Override
         protected void onPreExecute() {
@@ -128,50 +171,17 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             
     	}
    	 
-    	private StringBuilder inputStreamToString(InputStream is) {
-    		String line = "";
-    		StringBuilder total = new StringBuilder();
-    		  // Wrap a BufferedReader around the InputStream
-    		BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-    		// Read response until the end
-    		try {
-    			while ((line = rd.readLine()) != null) { 
-    				total.append(line); 
-    				}
-    			} catch (IOException e) {
-    				e.printStackTrace();
-    			}
-    	// Return full string
-    	return total;
-    	
-    	
-    	}
-
     	
         @Override
         protected Void doInBackground(Void... arg0) 
         {
         	
-        	
-        	Button submitButton1 = (Button)getActivity().findViewById(R.id.button1);
-    		if(submitButton1.getText().toString().contentEquals("Update?"))
-    		{
-
-    			nameEditText.setEnabled(true);
-    			maleRadioButton.setEnabled(true);
-    			femaleRadioButton.setEnabled(true);
-    			dateOfbirth.setEnabled(true);
-    			cellNoEditText.setEnabled(true);
-    			submitButton1.setText("Submit");
-    		}
-    		else
-    			if(submitButton1.getText().toString().contentEquals("Update?"))
-        		{
+    			
     				if(item!=null)
     				{
-    					 namePrev = nameEditText.getText().toString();
-    					 dobPrev = dateOfbirth.getText().toString();
-    					 cellNoPrev =cellNoEditText.getText().toString();;
+    					 namePrev = item.getText();
+    					 dobPrev = item.getDateOfBirth();
+    					 cellNoPrev =item.getNotifyNumber();
     						
     				      String  dateOfbirth=((EditText)getActivity().findViewById(R.id.date_of_birth_text)).getText().toString();
     				       // maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
@@ -180,22 +190,22 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     				    String	cellNoEditText = ((EditText)getActivity().findViewById(R.id.phone_num_text)).getText().toString();
     				    	
     				    	
-    					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoEditText))
-    					{return null;}
+    					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoPrev))
+    					{
+    						return null;
+    					}
     					else
     						{
     						url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
     						
     						
     						}
+    				
     				}
-    				else{
-    					url_add_beneficiary = url_add_beneficiary;
-    					//SubmitClicked(v);
+    				else
+    				{
+    					
     				}
-
-    		
-    		}
     		 
       
         	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
@@ -207,7 +217,14 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
 	    	dob = etDate.getText().toString();
 	   
-	    	if(dob!=null)
+	    	RadioButton etSex = (RadioButton)getActivity().findViewById(R.id.male_radio);
+	    	 if(etSex.isChecked())
+	    		 sex = "M";
+	    	 else
+	    		 sex = "F";
+	    	 
+	    	
+	    	if(dob!=null&&dob.contains("-"))
 	    	{
 	    	String dobaArray[] = new String[3];
 	    	
@@ -234,6 +251,10 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             nameValuePair.add(new BasicNameValuePair("name", name));
            nameValuePair.add(new BasicNameValuePair("notif_num", notify_num));
             nameValuePair.add(new BasicNameValuePair("dob", dob));
+            nameValuePair.add(new BasicNameValuePair("sex", sex));
+      		
+            nameValuePair.add(new BasicNameValuePair("hw_num", imei));
+            
       		
             
             String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
@@ -268,7 +289,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    protected void onPostExecute(Void result) {
 	    
 	    	super.onPostExecute(result);
-	    	
+	    	/*
 	    	if(user.isEmpty())
 	    	{
 	    		
@@ -283,6 +304,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    		if(user.containsKey("dob"))
 	    		etDate.setText(user.get("dob"));
 	    	}
+	    	*/
 	    	dismissProgress();
 	    	
 	    }    
@@ -290,16 +312,38 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     
     ////////////
     
-    String namePrev , dobPrev , cellNoPrev ;
-	@Override
+   Button deleteItem;
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        telephonyManager = (TelephonyManager)this.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
+		
+	    imei = telephonyManager.getDeviceId();
+	    //   deviceNum = telephonyManager.getLine1Number();
+	        	//	telephonyManager.getAllCellInfo();//.getLine1Number();
+	      
+		Log.d("imei", imei);
+        
+        
          onClickListener=new ButtonClickListener(this.getActivity());
          menuButton = (Button)getActivity().findViewById(R.id.menuadd_button_id);
          menuButton.setOnClickListener(onClickListener);
+         deleteItem = (Button)getActivity().findViewById(R.id.btn_deleteId);
+         //deleteItem.setOnClickListener(onClickListener);
 		
-		
+         
+         deleteItem.setOnClickListener(
+   		        new Button.OnClickListener() {
+   		        	public void onClick(View v) {
+   		        		DeleteRecord deleteRecord = new DeleteRecord();
+   		        		deleteRecord.execute();
+   		        		
+   		        		}
+   		        	}
+   		        );
+   	  
+   	  
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
@@ -311,6 +355,9 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
         femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
         nameEditText = (EditText)getActivity().findViewById(R.id.enter_name_text);
     	cellNoEditText = (EditText)getActivity().findViewById(R.id.phone_num_text);
+    	
+    	
+    	
     	submitButton = (Button)getActivity().findViewById(R.id.button1);
     	
     	InputMethodManager imm=(InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -352,31 +399,21 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     		        );
     	
     	
-        
-    /*
-        {
-    	mClient=new MobileServiceClient("https://vaccineproapp.azure-mobile.net/",  "AKuNBrSjWykyVFDZFWmwECbDlyfjvt98", this.getActivity().getBaseContext());
-		
-	mToDoTable = mClient.getTable(TodoItem.class);
-	if(mToDoTable != null)
-	{
-		ready = true;
-		
-	}
-		
-        
-        
-        }catch(Exception e)
-        {}
-    	
-*/
+    		
 		if (item!=null) {
 			
+		Log.d("item not null" , item.toString());
 		
-			nameEditText.setText(item.getText());
+			if(item.getText() != null)
+			{
+				nameEditText.setText(item.getText());
+			}
+			else
+				nameEditText.setText("");
+
 		
 			
-			if (item.getSex().compareToIgnoreCase("male")==0) {
+			if (item.getSex().contentEquals("M")) {
 				maleRadioButton.setChecked(true);
 				femaleRadioButton.setChecked(false);
 			}
@@ -387,8 +424,28 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 				
 			}
 			
-			dateOfbirth.setText(item.getDateOfBirth().toString());
-			cellNoEditText.setText(item.getMobileNumber());
+			if(item.getDateOfBirth() != null)
+			{
+				Log.d("dob not null", item.getDateOfBirth() );
+				dateOfbirth.setText(item.getDateOfBirth());
+			}
+			else
+			{
+				dateOfbirth.setHint("");
+				Log.d("dob", "null");
+			}
+			
+			if(item.getMobileNumber() != null)
+			{
+				Log.d("mob not null", item.getMobileNumber() );
+				
+				cellNoEditText.setText(item.getMobileNumber());
+			}
+			else{
+				Log.d("mob", "null");
+				cellNoEditText.setHint("");
+			}
+			
 			
 		 namePrev = nameEditText.getText().toString();
 		 dobPrev = dateOfbirth.getText().toString();
@@ -399,10 +456,14 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 			femaleRadioButton.setEnabled(false);
 			dateOfbirth.setEnabled(false);
 			cellNoEditText.setEnabled(false);
-			submitButton.setText("Update?");
+			submitButton.setText("Edit");
 			
+		}
+		else
+		{
+			Log.d("item is null" , "");
 		}	
-        
+		//cellNoEditText.setText(deviceNum);
         
 	}
 	
@@ -488,235 +549,107 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		
 		
 	}
-	public void SubmitClicked(View view)
-	{
-		
-		
-		Log.d("update clickced", "msg:");
-		
-		GetProfileDetails addBenificiary = new GetProfileDetails();
-		addBenificiary.execute();
-		
-		
-	/*	
-		view.setEnabled(false);
-		AsyncTask<Void, Integer, Void> task = new AsyncTask<Void, Integer, Void>() {
-		RadioButton maleRadioButton;
-		RadioButton femaleRadioButton;
-		EditText dateOfbirth;
-		EditText nameEditText, cellNoEditText ;
-		Button submitButton;
-		
-		String buttonDelete = getResources().getString(R.string.Delete);
-		String buttonSave = getResources().getString(R.string.Save);
-		String buttonSubmit = getResources().getString(R.string.submit);
-		
-		@Override
-		protected void onPreExecute() {
-		    dateOfbirth=(EditText)getActivity().findViewById(R.id.date_of_birth_text);
-	        maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
-	        femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
-	        nameEditText = (EditText)getActivity().findViewById(R.id.enter_name_text);
-	    	cellNoEditText = (EditText)getActivity().findViewById(R.id.phone_num_text);
-	    	submitButton = (Button)getActivity().findViewById(R.id.button1);
-	    	//String a = getActivity().getApplicationContext().
-	    	createProgress();	
-			
-		}
-			
-		@Override
-		protected Void doInBackground(Void... arg0) {
-			
-		try {
-			 //ShowMessage("Insert","Inserting");  
-			Log.e("start", "msg="+isNetworkAvailable());
-			if (submitButton.getText().equals("Update?")) 
-			{			
-				nameEditText.setEnabled(true);
-				maleRadioButton.setEnabled(true);
-				femaleRadioButton.setEnabled(true);
-				dateOfbirth.setEnabled(true);
-				cellNoEditText.setEnabled(true);
-			}// if update
-			
-			if (submitButton.getText().equals("Save"))
-			{
-				item.setText(nameEditText.getText().toString());
-				item.setMobileNumber(cellNoEditText.getText().toString());
-				if(this.maleRadioButton.isChecked())
-				{
-					item.setSex("male");
-				}
-				else
-				{
-					item.setSex("female");
-				}
-				try
-				{
-					
-					
-					mToDoTable.update(item, new TableOperationCallback<TodoItem>() 
-					{
-						public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) 
-						{
-						    	    
-							if (exception == null) 
-							{
-								dismissProgress();
-								//ShowMessage("Success","Records Updated");          		     
-							} 
-							else 
-							{
-								dismissProgress();
-				       
-							//ShowMessage("Failed", "Cannot be Updated");
-							}
-						}
-					});
-						
-				}catch(Exception e)
-				{
-					dismissProgress();
-				//	ShowMessage("Exception", e.toString());  
-							
-				}
-						
-						
-			}// if save
-		
-			if (submitButton.getText().equals("Update?")) 
-			{
-				submitButton.setText("Save");
-			}			
-							
-			if (submitButton.getText().equals(buttonSubmit)) 
-			{
-				Log.d("submit", "msg");		
-				if((nameEditText.getText().length() == 0) || (cellNoEditText.getText().length() == 0) ||
-							((!maleRadioButton.isChecked()) && (!femaleRadioButton.isChecked())))
-				{
-					dismissProgress();
-		        	
-					publishProgress(3);
-					Log.d("insert", "msg");
-				}
-				else
-				{
-					Log.d("else", "msg");
-					//process here
-					TodoItem item = new TodoItem();
-					item.setText(nameEditText.getText().toString());
-					item.setRegCode(cellNoEditText.getText().toString());
-					if(this.maleRadioButton.isChecked())
-					{
-						item.setSex("male");
-					}
-					else
-					{
-						item.setSex("female");
-					}
-					
-					Log.d("inserttt", "msg");	
-					mToDoTable.insert(item, new TableOperationCallback<TodoItem>() 
-					{
-						public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) 
-						{	 
-					        if (exception == null) 
-					        {           	
-					            dismissProgress();
-					        	nameEditText.setText("");
-					          	cellNoEditText.setText("");
-					          	dateOfbirth.setText("");
-					          	femaleRadioButton.setChecked(false);
-					          	maleRadioButton.setChecked(false);
-					          	 publishProgress(1);
-					         }
-					         else 
-					         {
-					        	 
-					        	 dismissProgress();
-					        	 publishProgress(4);
-					            }
-					        	 
-					            	
-					            	
-					      }
-					});		
-					
-					
-				}// else
-			
-			}// if submit
-				
-				
-			} catch (Exception e) {
-				
-				dismissProgress();
-				// TODO Auto-generated catch block
-				publishProgress(2);
-			e.printStackTrace();
-			Log.d("exc", e.toString() );
-			//ShowMessage("Failed", "Can not be Added");
-			}
-			return null;
-		}
-		
-		@Override
-		protected void onPostExecute(Void result) {
-			
-			
-		}
-		
-		 @Override
-		 protected void onProgressUpdate(Integer... progress) {
-			 
-				String Success = getResources().getString(R.string.Success);
-				
-				String AddSuccess = getResources().getString(R.string.AddedSuccess);
-				
-				String Fail = getResources().getString(R.string.Failed);
-				
-				String CannotAdd = getResources().getString(R.string.Cannotbeadded);
-				
-	String Warning = getResources().getString(R.string.Warning);
-				
-				String FullDetail = getResources().getString(R.string.FullDetail);
-				String NoNetwork = getResources().getString(R.string.NoNetwork);
-					
-			 if(progress[0] == 1)
-			 {
-					ShowMessage(Success, AddSuccess);
-			 }
-			 if(progress[0] == 2)
-			 {
-			 ShowMessage(Fail, CannotAdd);
-			 }
-			 if(progress[0] == 3)
-			 {
-			 ShowMessage(Warning, FullDetail);
-			 }
-			 if(progress[0] == 4)
-			 {
-			 ShowMessage(Warning, NoNetwork);
-			 }
-		 }
-			
-	};
-	task.execute((Void[])null);
-		
-		*/
-	
-	}
-	
+
 	
 	@Override
 	public void onClick(View v) {
 		 DatePickerDialog datePicker=  new DatePickerDialog(this.getActivity(), this, mYear, mMonth, mDay);
 		   datePicker.show();
-		
-		
+	
 	}
+	
 
+    private class DeleteRecord extends AsyncTask<Void, Void, Void> 
+    {
+    	HashMap<String, String> user;
+    	String name, dob , notify_num, sex , hw_number;
+    	// ProgressDialog pDialog= new ProgressDialog(context);
+    	@Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            createProgress();
+    	}
+   	 
+    	
+        @Override
+        protected Void doInBackground(Void... arg0) 
+        {
+    				if(item!=null)
+    				{
+    					url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
+    				}
+    		 
+      
+        	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+	    	name = etName.getText().toString();
+	    	
+	    	EditText etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
+	    	notify_num = etNotifyNum.getText().toString();
+	    	
+	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    	dob = etDate.getText().toString();
+	   
+	    	RadioButton etSex = (RadioButton)getActivity().findViewById(R.id.male_radio);
+	    	 if(etSex.isChecked())
+	    		 sex = "M";
+	    	 else
+	    		 sex = "F";
+	    	 
+	    	
+	    	if(dob!=null&&dob.contains("-"))
+	    	{
+	    	String dobaArray[] = new String[3];
+	    	
+	    	dobaArray = dob.split("-");
+	    	
+	    	dob = "";
+	    	dob = dob + dobaArray[2] +"/"+ dobaArray[1] +"/"+ dobaArray[0] ;
+	    	}
+	    	else
+	    		 Log.d("dob","dob is null");
+	    		
+        	
+            // Creating service handler class instance
+            ServiceHandler sh = new ServiceHandler();
+            Log.d("dob",dob);
+            
+            // Making a request to url and getting response
+            Log.d("url_add_beneficiary",url_add_beneficiary);
+            
+        
+            
+            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
+            
+            Log.d("Response: ", "> " + jsonStr);
+ 
+            
+            return null;    
+        }
+	     
+	    @Override
+	    protected void onPostExecute(Void result) {
+	    
+	    	super.onPostExecute(result);
+	    	/*
+	    	if(user.isEmpty())
+	    	{
+	    		
+	    	}
+	    	else
+	    	{
+	    		EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+	    		//if(user.containsKey("name"))
+	    		etName.setText("");
+	    	
+	    		EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    		//if(user.containsKey("dob"))
+	    		etDate.setText("");
+	    	}
+	    	*/
+	    	dismissProgress();
+	    	
+	    }    
+    }
 	
 	
 }

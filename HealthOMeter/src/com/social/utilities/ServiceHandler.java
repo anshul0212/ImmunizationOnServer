@@ -3,12 +3,13 @@ package com.social.utilities;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
- 
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -20,10 +21,10 @@ public class ServiceHandler {
     static String response = null;
     public final static int GET = 1;
     public final static int POST = 2;
- 
+    public final static int DELETE = 3;
     public ServiceHandler() {
  
-    }
+    } 
  
     /**
      * Making service call
@@ -52,7 +53,7 @@ public class ServiceHandler {
                 HttpPost httpPost = new HttpPost(url);
                 // adding post params
                 if (params != null) {
-                    httpPost.setEntity(new UrlEncodedFormEntity(params));
+                    httpPost.setEntity(new UrlEncodedFormEntity(params , "utf-8"));
                 }
  
                 httpResponse = httpClient.execute(httpPost);
@@ -65,6 +66,13 @@ public class ServiceHandler {
                 }
                 HttpGet httpGet = new HttpGet(url);
                 httpResponse = httpClient.execute(httpGet);
+ 
+            }
+            else  if (method == DELETE) {
+            	HttpDelete httpDelete = new HttpDelete(url);
+                // adding post params
+               
+                httpResponse = httpClient.execute(httpDelete);
  
             }
             httpEntity = httpResponse.getEntity();

@@ -13,12 +13,16 @@ import com.social.utilities.Localization;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
 public class ButtonClickListener implements OnClickListener {
 
+	  private SharedPreferences sharedP;
+		
 	private Context context;
 	private Locale locale;
 	
@@ -36,14 +40,24 @@ public class ButtonClickListener implements OnClickListener {
 		
 	}
 	
+	public static void setDefaults(String key, String value, Context context) {
+	    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	    SharedPreferences.Editor editor = prefs.edit();
+	    editor.putString(key, value);
+	    editor.commit();
+	}
 	
 	
 	@Override
 	public void onClick(View v) {
 		
     if (v.getId()==R.id.english) {
-    	  
     	
+    	ButtonClickListener.setDefaults("isLangSet", "true",  context);
+    	ButtonClickListener.setDefaults("lang", "EN",  context);
+    	
+    	
+		 
     	  Localization.setLanguage(context, "en",locale); 
     	  Intent i = new Intent(context, MainMenuActivity.class);
     	  i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); //To add the activity to the stack of running activities
@@ -51,6 +65,10 @@ public class ButtonClickListener implements OnClickListener {
 	}		
  		
     if (v.getId()==R.id.hindi) {
+    	
+    	ButtonClickListener.setDefaults("isLangSet", "true",  context);
+    	ButtonClickListener.setDefaults("lang", "HIN",  context);
+    	
     	
     	 Localization.setLanguage(context, "hi",locale); 
    	     Intent i = new Intent(context, MainMenuActivity.class);

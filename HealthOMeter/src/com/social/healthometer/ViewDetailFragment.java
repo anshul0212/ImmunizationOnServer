@@ -17,12 +17,14 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ActionBar.OnNavigationListener;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -247,7 +249,7 @@ public class ViewDetailFragment extends Activity {
 	  private class PopulateSearchedDetails extends AsyncTask<Void, Void, Void> 
 	    {
 	    	 ArrayList<TodoItem> arrayItem = new ArrayList<TodoItem>();
-	            String url_add_beneficiary, name, notifyNum;
+	            String url_add_beneficiary, name, notifyNum , hw_number;
 	    	// ProgressDialog pDialog= new ProgressDialog(context);
 	    	@Override
 	        protected void onPreExecute() {
@@ -265,6 +267,7 @@ public class ViewDetailFragment extends Activity {
 	          
 	            // Making a request to url and getting response
 	        
+	            
 	            url_add_beneficiary = getString(R.string.url_add_beneficiary);
 	        	
 		    	EditText etName = (EditText)findViewById(R.id.txtSearchName_id);
@@ -273,6 +276,13 @@ public class ViewDetailFragment extends Activity {
 	            name = (etName).getText().toString();
 	            notifyNum = ((EditText)findViewById(R.id.txtSearchPhone_id)).getText().toString();
 	      
+	            TelephonyManager telephonyManager;
+
+		        telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
+				
+			     String imei = telephonyManager.getDeviceId();
+			    
+	            
 	            if(name.length() <= 0 && notifyNum.length() >= 0 )
 	    		{
 
@@ -295,7 +305,7 @@ public class ViewDetailFragment extends Activity {
 	    			{
 	    				
 	    			}
-	            
+	            url_add_beneficiary = url_add_beneficiary +"&hw_num="+imei;
 	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
 	            Log.d("Response: ", "> " + jsonStr);
@@ -349,7 +359,7 @@ public class ViewDetailFragment extends Activity {
 	                		 String is_verified = c.getString("is_verified");    
 	                		 String Id = c.getString("Id");
 	                		 
-	                		 item.setDateOfBirth(dob.toString());
+	                		 item.setDateOfBirth(dob);
 	                		 item.setText(name);
 	                		 item.setNotifyNumber(notify_number);
 	                		 item.setHw_number(health_worker_phone);
@@ -388,6 +398,7 @@ public class ViewDetailFragment extends Activity {
 		    	 Iterator<TodoItem> itr =  arrayItem.iterator();
 		    	 
 		    	int er =0;
+		    	customArrayAdapter.clear();
 		    	while(itr.hasNext())
 		    	{
 		    	// Log.d("arrayItem: ", "> " +);
@@ -395,6 +406,7 @@ public class ViewDetailFragment extends Activity {
 		    		customArrayAdapter.add(itr.next());
 		    	}
 		    	
+		    	customArrayAdapter.notifyDataSetChanged();	  
 		    	
 		    	 
 		    	//

@@ -115,7 +115,7 @@
         <Button
             android:id="@+id/search_btn_id"
             android:layout_width="wrap_content"
-            android:layout_height="28dip"
+            android:layout_height="32dip"
            android:layout_gravity="center"
              android:gravity="center"
              android:layout_marginRight="5dp"
@@ -130,7 +130,7 @@
     	  	    android:id="@+id/menusearch_button_id"
     	  	      android:textSize="15sp"
     	  		    android:layout_width="wrap_content"
-            android:layout_height="28dip"
+            android:layout_height="32dip"
        			  android:gravity="center"
        			   android:layout_marginTop="7dp"
     	                 android:layout_marginBottom="7dp"

@@ -13,6 +13,7 @@
     <string name="add_details">Add Details</string>
     <string name="verified_list">Verified List</string>
     <string name="verify">Verify</string>
+    
     <string name="search">Search</string>
     <string name="settings">Settings</string>
     <string name="Menu">Menu</string>  
@@ -49,8 +50,10 @@
      	        <string name="Warning">Warning!</string>
      	      <string name="AddedSuccess">Added Successfully!</string>
      	   	      <string name="NoNetwork">No Network Available!</string>
+     	   	      
+     	   	         <string name="update">Update</string>
   <string name="Save">Save</string>
-  
+   	 <string name="hwsetting">Health Worker Settings</string>
   
   <string name="url_add_beneficiary">http://promdhost.in/vaccination/beneficiary/</string>
  

@@ -82,7 +82,6 @@ android:layout_marginLeft="18dp"
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
            
-            
              android:text="@string/phone_num"
              android:textAppearance="?android:attr/textAppearanceMedium" />
        <LinearLayout
@@ -101,6 +100,7 @@ android:layout_marginLeft="18dp"
             
              android:ems="8"
              
+            android:maxLength="10"
                android:background="@color/white_color"
          
              android:hint="@string/enter_num"
@@ -249,6 +249,18 @@ android:gravity="center"
              android:paddingLeft="15dp"
              android:paddingRight="15dp"
              android:text="@string/submit"
+             android:textColor="@color/white_color" />
+         
+         <Button
+             android:id="@+id/btn_deleteId"
+             android:layout_width="wrap_content"
+             android:layout_height="32dp"
+             android:background="@drawable/button_selector"
+             android:layout_marginLeft="15dp"
+             android:paddingLeft="15dp"
+             android:paddingRight="15dp"
+             android:text="@string/Delete"
+             android:visibility="gone"
              android:textColor="@color/white_color" />
 
    </LinearLayout>     

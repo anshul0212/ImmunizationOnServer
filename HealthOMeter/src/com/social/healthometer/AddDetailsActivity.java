@@ -13,14 +13,17 @@ import java.util.ArrayList;
 
 
 
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
+import android.content.Context;
 import android.content.Intent;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -66,18 +69,31 @@ public class AddDetailsActivity extends Activity {
 	private EditText dateOfbirth;
 public AddDetailsActivity()
 {
-	 Log.d("createView", "value1");
+	 Log.d("createView8888888888", "value1");
 
 }
 	
+
+TelephonyManager telephonyManager;
 	
 @Override
 protected void onCreate(Bundle savedInstanceState) {
 	super.onCreate(savedInstanceState);
-	
+
+   /* telephonyManager = (TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+		
+    String  imei = telephonyManager.getDeviceId();
+   String deviceNum = telephonyManager.getLine1Number();
+     	//	telephonyManager.getAllCellInfo();//.getLine1Number();
+   
+		Log.d("imei", imei);
+		Log.d("deviceNum Main", ""+deviceNum);
+*/
 	
 	setContentView(R.layout.activity_add_details);
-	
+
+	 Log.d("in act", "value1");
+
 	addDetailsFragment=new FragmentAddDetails();
 	if (ViewDetailFragment.ITEM_TO_EDIT!=null) {
 		addDetailsFragment.setItem(ViewDetailFragment.ITEM_TO_EDIT);
@@ -85,7 +101,6 @@ protected void onCreate(Bundle savedInstanceState) {
 		//date_of_birth_text
 		ViewDetailFragment.ITEM_TO_EDIT=null;
 	}
-	
 	
 
 	FragmentManager fragmentManager=getFragmentManager();

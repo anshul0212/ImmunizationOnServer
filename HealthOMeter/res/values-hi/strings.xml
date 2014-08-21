@@ -56,10 +56,10 @@
      	       <string name="FullDetail"> पूरा विवरण प्रदान करें!</string>
      	        <string name="Warning">चेतावनी!</string>
 	     
-	     
+	    	         <string name="update">परिवर्तन करे</string>
    	 <string name="Delete">हटाना..</string>
    	 <string name="Save">दर्ज..</string>
-   	 
+   	 <string name="hwsetting">स्वास्थ्य कार्यकर्ता सेटिंग</string>
    	 
 	    <string-array name="languages">
 	        

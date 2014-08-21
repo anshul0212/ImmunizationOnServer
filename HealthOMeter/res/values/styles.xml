@@ -30,7 +30,7 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:background">@android:color/transparent</item>
     </style>
-<color name="redlist_color">#F25F5F</color>
+<color name="redlist_color">#FA082D</color>
      <color name="light_red_color">#FA082D</color>
      <color name="dark_red_color">#E91010</color>
 	 <color name="light_green_color">#B2F7B1</color>
