@@ -72,6 +72,13 @@
      android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_update_delete" >
         </activity>
+                <activity
+            android:name="com.social.healthometer.PasskeyActivity"
+             android:screenOrientation="portrait"
+     android:configChanges="keyboardHidden|orientation"
+            android:label="@string/title_activity_Passkey" >
+        </activity>
+        
         
     </application>
 

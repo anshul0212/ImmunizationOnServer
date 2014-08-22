@@ -40,6 +40,7 @@
     <string name="submit">Submit</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_update_delete">Update and Delete</string>
+        <string name="title_activity_Passkey">Log In</string>
  <string name="Processing">Processing..</string>
      	 <string name="Delete">Delete</string>
      	  <string name="PleaseWait">Please Wait..</string>
@@ -49,7 +50,13 @@
      	        <string name="FullDetail"> Please provide full detail then retry!</string>
      	        <string name="Warning">Warning!</string>
      	      <string name="AddedSuccess">Added Successfully!</string>
+     	      <string name="DeletedSuccess">Deleted Successfully!</string>
+     	       <string name="UpdatedSuccess">Updated Successfully!</string>
+     	   	 
      	   	      <string name="NoNetwork">No Network Available!</string>
+     	   	      <string name="Information">Information</string>
+     	   	       <string name="wrongPasskey">Passkey entered is wrong. Please try again.</string>
+     	   	      <string name="mobileNoUpdated">Mobile No updated successfully</string>
      	   	      
      	   	         <string name="update">Update</string>
   <string name="Save">Save</string>

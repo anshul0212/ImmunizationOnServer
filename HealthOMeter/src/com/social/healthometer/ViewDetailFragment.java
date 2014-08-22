@@ -19,11 +19,13 @@ import android.app.FragmentTransaction;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -276,12 +278,13 @@ public class ViewDetailFragment extends Activity {
 	            name = (etName).getText().toString();
 	            notifyNum = ((EditText)findViewById(R.id.txtSearchPhone_id)).getText().toString();
 	      
-	            TelephonyManager telephonyManager;
-
-		        telephonyManager = (TelephonyManager)getSystemService(Context.TELEPHONY_SERVICE);
-				
-			     String imei = telephonyManager.getDeviceId();
-			    
+	            hw_number= "false";
+	            
+	            hw_number = ViewDetailFragment.getDefaults("mobileNo" , getApplicationContext());
+	            
+	        
+	            
+	           
 	            
 	            if(name.length() <= 0 && notifyNum.length() >= 0 )
 	    		{
@@ -305,7 +308,10 @@ public class ViewDetailFragment extends Activity {
 	    			{
 	    				
 	    			}
-	            url_add_beneficiary = url_add_beneficiary +"&hw_num="+imei;
+	            url_add_beneficiary = url_add_beneficiary +"&hw_num="+hw_number;
+	            
+	            Log.d("url_add_beneficiary: ", "> " + url_add_beneficiary);
+		           
 	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
 	            Log.d("Response: ", "> " + jsonStr);
@@ -423,7 +429,11 @@ public class ViewDetailFragment extends Activity {
 	    }
 
 
-	
+	  public static String getDefaults(String key, Context context) {
+		    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		    return preferences.getString(key, "false");
+		}
+	  
 	private void refreshItemsFromTable() {
 
 		// Get the items that weren't marked as completed and add them in the

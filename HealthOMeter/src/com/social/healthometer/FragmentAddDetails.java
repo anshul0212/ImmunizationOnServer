@@ -37,11 +37,13 @@ import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
@@ -94,7 +96,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	Button menuButton;
     ButtonClickListener onClickListener ;
     
-	
+    Button deleteItem;
 	public TodoItem getItem() {
 		return item;
 	}
@@ -160,12 +162,15 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     private class GetProfileDetails extends AsyncTask<Void, Void, Void> 
     {
     	HashMap<String, String> user;
+    	 String  jsonStr, flagNetwork;
     	String name, dob , notify_num, sex , hw_number;
+    	EditText etName, etDate,etNotifyNum;
+    	
     	// ProgressDialog pDialog= new ProgressDialog(context);
     	@Override
         protected void onPreExecute() {
             super.onPreExecute();
-            
+            flagNetwork = "0";
             createProgress();
             
             
@@ -192,6 +197,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     				    	
     					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoPrev))
     					{
+    						flagNetwork= "1";
     						return null;
     					}
     					else
@@ -208,13 +214,13 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     				}
     		 
       
-        	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+        	 etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
 	    	name = etName.getText().toString();
 	    	
-	    	EditText etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
+	    	 etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
 	    	notify_num = etNotifyNum.getText().toString();
 	    	
-	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    	 etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
 	    	dob = etDate.getText().toString();
 	   
 	    	RadioButton etSex = (RadioButton)getActivity().findViewById(R.id.male_radio);
@@ -244,6 +250,10 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             // Making a request to url and getting response
             Log.d("url_add_beneficiary",url_add_beneficiary);
             
+            hw_number= "false";
+            
+            hw_number = FragmentAddDetails.getDefaults("mobileNo" , context);
+            
         
          // Building post parameters, key and value pair
             List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
@@ -253,11 +263,11 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             nameValuePair.add(new BasicNameValuePair("dob", dob));
             nameValuePair.add(new BasicNameValuePair("sex", sex));
       		
-            nameValuePair.add(new BasicNameValuePair("hw_num", imei));
+            nameValuePair.add(new BasicNameValuePair("hw_num", hw_number));
             
       		
             
-            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
+              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
             
             Log.d("Response: ", "> " + jsonStr);
  
@@ -278,6 +288,8 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
                     e.printStackTrace();
                 }  
             } else {
+            	
+            
                 Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
             
@@ -289,6 +301,31 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    protected void onPostExecute(Void result) {
 	    
 	    	super.onPostExecute(result);
+	    	
+	    	if(jsonStr != null)
+	    	{
+	    		if(item!=null)
+	    		ShowMessage(getString(R.string.Success), getString(R.string.AddedSuccess), getResources().getDrawable(R.drawable.checkmark) );
+	    	else
+	    		ShowMessage(getString(R.string.Success), getString(R.string.UpdatedSuccess), getResources().getDrawable(R.drawable.checkmark) );
+	    	
+	    		etName.setText("");
+	    		etDate.setText("");
+	    		etNotifyNum.setText("");
+	        	
+	    	}
+	    	else
+	    	{
+	    		if(flagNetwork.contentEquals("1"))
+	    		{
+	    			
+	    		}
+	    		else
+	    		ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+	    		
+	    	}
+        	
+        	
 	    	/*
 	    	if(user.isEmpty())
 	    	{
@@ -312,26 +349,15 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     
     ////////////
     
-   Button deleteItem;
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        telephonyManager = (TelephonyManager)this.getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-		
-	    imei = telephonyManager.getDeviceId();
-	    //   deviceNum = telephonyManager.getLine1Number();
-	        	//	telephonyManager.getAllCellInfo();//.getLine1Number();
-	      
-		Log.d("imei", imei);
-        
-        
          onClickListener=new ButtonClickListener(this.getActivity());
          menuButton = (Button)getActivity().findViewById(R.id.menuadd_button_id);
          menuButton.setOnClickListener(onClickListener);
          deleteItem = (Button)getActivity().findViewById(R.id.btn_deleteId);
-         //deleteItem.setOnClickListener(onClickListener);
-		
          
          deleteItem.setOnClickListener(
    		        new Button.OnClickListener() {
@@ -342,28 +368,24 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
    		        		}
    		        	}
    		        );
+
+         final Calendar c = Calendar.getInstance();
+         mYear = c.get(Calendar.YEAR);
+         mMonth = c.get(Calendar.MONTH);
+         mDay = c.get(Calendar.DAY_OF_MONTH);
    	  
-   	  
-        final Calendar c = Calendar.getInstance();
-        mYear = c.get(Calendar.YEAR);
-        mMonth = c.get(Calendar.MONTH);
-        mDay = c.get(Calendar.DAY_OF_MONTH);
-  
-        
         dateOfbirth=(EditText)getActivity().findViewById(R.id.date_of_birth_text);
         maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
         femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
         nameEditText = (EditText)getActivity().findViewById(R.id.enter_name_text);
     	cellNoEditText = (EditText)getActivity().findViewById(R.id.phone_num_text);
     	
-    	
-    	
     	submitButton = (Button)getActivity().findViewById(R.id.button1);
     	
     	InputMethodManager imm=(InputMethodManager)this.getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     	imm.hideSoftInputFromInputMethod(dateOfbirth.getWindowToken(),0);
         dateOfbirth.setInputType(InputType.TYPE_DATETIME_VARIATION_NORMAL);
-    	  dateOfbirth.setOnClickListener(this);
+    	 dateOfbirth.setOnClickListener(this);
     	  
     	
     	  
@@ -474,6 +496,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     monthOfYear=monthOfYear+1;		
 	dateOfbirth.setText(dayOfMonth+"-"+monthOfYear+"-"+year);
 		
+	
 	}
 
 	@Override
@@ -504,11 +527,18 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		
 	}
 
-	public void ShowMessage(String title, String message)
+	public static String getDefaults(String key, Context context) {
+	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+	    return preferences.getString(key, "false");
+	}
+
+	public void ShowMessage(String title, String message, Drawable drawable )
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
 
 		builder.setMessage(message);
+		
+		builder.setIcon(drawable);
 		builder.setTitle(title);
 		builder.create().show();
 	}
@@ -562,7 +592,8 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     private class DeleteRecord extends AsyncTask<Void, Void, Void> 
     {
     	HashMap<String, String> user;
-    	String name, dob , notify_num, sex , hw_number;
+    	String name, dob , notify_num, sex , hw_number, jsonStr;
+    	EditText etName, etDate,etNotifyNum;
     	// ProgressDialog pDialog= new ProgressDialog(context);
     	@Override
         protected void onPreExecute() {
@@ -580,13 +611,13 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     				}
     		 
       
-        	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
+        	 etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
 	    	name = etName.getText().toString();
 	    	
-	    	EditText etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
+	    	 etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
 	    	notify_num = etNotifyNum.getText().toString();
 	    	
-	    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    	 etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
 	    	dob = etDate.getText().toString();
 	   
 	    	RadioButton etSex = (RadioButton)getActivity().findViewById(R.id.male_radio);
@@ -618,7 +649,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             
         
             
-            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
+              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
             
             Log.d("Response: ", "> " + jsonStr);
  
@@ -630,6 +661,18 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    protected void onPostExecute(Void result) {
 	    
 	    	super.onPostExecute(result);
+	    	if(jsonStr != null)
+	    	{
+	    		
+	    		ShowMessage(getString(R.string.Success), getString(R.string.DeletedSuccess), getResources().getDrawable(R.drawable.checkmark) );
+	    		etName.setText("");
+	    		etDate.setText("");
+	    		etNotifyNum.setText("");
+	    	}
+	    	else
+	    		ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+        	
+        	
 	    	/*
 	    	if(user.isEmpty())
 	    	{

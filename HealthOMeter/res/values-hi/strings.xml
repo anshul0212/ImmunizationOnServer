@@ -61,6 +61,11 @@
    	 <string name="Save">दर्ज..</string>
    	 <string name="hwsetting">स्वास्थ्य कार्यकर्ता सेटिंग</string>
    	 
+   	  <string name="Information">सूचना !</string>
+     	   	       <string name="wrongPasskey">पासकी दर्ज किया गलत है. पुन: प्रयास करें.</string>
+     	   	      <string name="mobileNoUpdated">मोबाइल नं सफलतापूर्वक बदला</string>
+     	   	      
+     	   	      
 	    <string-array name="languages">
 	        
         <item>चयन</item>

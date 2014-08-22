@@ -61,7 +61,7 @@ android:gravity="right"
              android:layout_width="wrap_content"
               android:layout_height="31dp"
          
-          
+          android:paddingLeft="2sp"
            android:background="@color/white_color"
              android:ems="8"
              android:hint="@string/enter_dob"
@@ -99,7 +99,7 @@ android:layout_marginLeft="18dp"
              android:layout_height="31dp"
             
              android:ems="8"
-             
+             android:paddingLeft="2sp"
             android:maxLength="10"
                android:background="@color/white_color"
          
@@ -136,7 +136,7 @@ android:gravity="right"
         android:id="@+id/enter_name_text"
         android:layout_width="wrap_content"
         android:layout_height="31dp"
-   
+   android:paddingLeft="2sp"
         android:ems="8"
          android:background="@color/white_color"
         android:hint="@string/enter_name"
@@ -224,19 +224,21 @@ android:gravity="right"
     android:layout_height="wrap_content"
   android:orientation="horizontal"
 android:layout_marginLeft="18dp"
+android:layout_marginRight="18dp"
 android:gravity="center"
    android:layout_marginTop="18dp"
   >
          <Button
              android:id="@+id/menuadd_button_id"
              android:layout_width="wrap_content"
-             android:layout_height="32dp"
-           
+             android:layout_height="35dp"
+               android:textSize="25sp"
              android:background="@drawable/button_selector"
              android:gravity="center"
              android:paddingLeft="25dp"
              android:paddingRight="25dp"
              android:layout_marginRight="10dp"
+         
              android:text="@string/Menu"
              android:textColor="@color/white_color"
             />
@@ -244,27 +246,42 @@ android:gravity="center"
          <Button
              android:id="@+id/button1"
              android:layout_width="wrap_content"
-             android:layout_height="32dp"
+             android:layout_height="35dp"
              android:background="@drawable/button_selector"
              android:paddingLeft="15dp"
              android:paddingRight="15dp"
+			 android:textSize="25sp"
              android:text="@string/submit"
              android:textColor="@color/white_color" />
          
-         <Button
-             android:id="@+id/btn_deleteId"
-             android:layout_width="wrap_content"
-             android:layout_height="32dp"
-             android:background="@drawable/button_selector"
-             android:layout_marginLeft="15dp"
-             android:paddingLeft="15dp"
-             android:paddingRight="15dp"
-             android:text="@string/Delete"
-             android:visibility="gone"
-             android:textColor="@color/white_color" />
+         
 
    </LinearLayout>     
-        
+         
+ <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+  android:orientation="horizontal"
+android:layout_marginLeft="18dp"
+android:layout_marginRight="18dp"
+android:gravity="center"
+   android:layout_marginTop="18dp"
+  >    
+<Button
+             android:id="@+id/btn_deleteId"
+           
+             android:text="@string/Delete"
+             android:visibility="gone"
+             android:textColor="@color/white_color" 
+             
+             android:layout_width="wrap_content"
+             android:layout_height="35dp"
+             android:background="@drawable/delete_selector"
+             android:paddingLeft="15dp"
+             android:paddingRight="15dp"
+			 android:textSize="25sp"
+     />
 
+</LinearLayout>
 </LinearLayout>
 </ScrollView>

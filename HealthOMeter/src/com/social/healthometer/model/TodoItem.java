@@ -172,8 +172,7 @@ public class TodoItem {
 	}
 	
 	public final void setDateOfBirth(String dob) {
-		//mDOB = dob.toString();
-		mDOB = "2012/03/03";
+		mDOB = dob;
 	}
 	
 	public String getDateOfBirth() {		

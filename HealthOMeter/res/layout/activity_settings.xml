@@ -12,18 +12,23 @@
         android:layout_below="@+id/set_phone"
         android:layout_marginTop="44dp"
         android:text="@string/language"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+       android:textAppearance="?android:attr/textAppearanceLarge" />
 
+   
     <EditText
         android:id="@+id/et_phoneSettingId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+     android:layout_width="wrap_content"
+              android:layout_height="31dp"
+         
+          android:paddingLeft="2sp"
+           android:background="@color/white_color"
+             android:ems="12"
         android:layout_above="@+id/language"
         android:layout_marginRight="30dp"
         android:layout_alignLeft="@+id/spinner1"
-          android:background="@drawable/edittext_selector"
+       
         android:layout_alignParentRight="true"
-        android:ems="10"
+       
         android:maxLength="10"
         android:inputType="phone" />
 
@@ -56,25 +61,15 @@
          android:layout_below="@+id/settings"
          android:layout_marginTop="60dp"
          android:text="@string/phone_num"
-         android:textAppearance="?android:attr/textAppearanceMedium" />
-
-     <Button
-         android:id="@+id/menusetting_button_id"
-         android:layout_width="wrap_content"
-         android:layout_height="32dip"
-         android:layout_below="@+id/spinner1"
-         android:layout_marginTop="49dp"
-         android:layout_toRightOf="@+id/set_phone"
-         android:background="@drawable/button_selector"
-         android:gravity="center"
-         android:text="@string/Menu"
-         android:textColor="@color/white_color"
-         android:textSize="15sp" />
+         android:textAppearance="?android:attr/textAppearanceLarge" />
 
      <Button
          android:id="@+id/btn_hwSubmitId"
          android:layout_width="wrap_content"
-         android:layout_height="32dip"
+         android:layout_height="35dp"
+         android:textSize="25sp"
+         android:paddingLeft="5dp"
+         android:paddingRight="5dp"
          android:layout_alignBaseline="@+id/menusetting_button_id"
          android:layout_alignBottom="@+id/menusetting_button_id"
          android:layout_marginLeft="34dp"
@@ -83,6 +78,23 @@
          android:gravity="center"
          android:text="@string/submit"
          android:textColor="@color/white_color"
-         android:textSize="15sp" />
+ />
+
+     <Button
+         android:id="@+id/menusetting_button_id"
+         android:layout_width="wrap_content"
+         android:layout_height="35dp"
+         android:textSize="25sp" 
+         android:paddingLeft="10dp"
+         android:paddingRight="10dp"
+         
+         android:layout_alignRight="@+id/language"
+         android:layout_below="@+id/spinner1"
+         android:layout_marginTop="48dp"
+         android:background="@drawable/button_selector"
+         android:layout_gravity="center"
+         android:text="@string/Menu"
+         android:textColor="@color/white_color"
+         />
 
 </RelativeLayout>

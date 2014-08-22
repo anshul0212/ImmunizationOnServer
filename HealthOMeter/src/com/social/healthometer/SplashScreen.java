@@ -20,11 +20,10 @@ public class SplashScreen extends Activity {
 	// Splash screen timer
     private static int SPLASH_TIME_OUT = 5000;
     SharedPreferences sharedP;
-    String lang;
-    String isLangSet;
+    String passKey;
+    String mobileNo;
     
-    private Locale activityLocale;
-    
+   
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,41 +40,22 @@ public class SplashScreen extends Activity {
             public void run() {
                 // This method will be executed once the timer is over
                 // Start your app main activity
-            	  sharedP = getSharedPreferences("Language", Context.MODE_PRIVATE);
-
-                  isLangSet= "false";
-                  lang = "EN";
-          		lang = SplashScreen.getDefaults("lang" , getApplicationContext());
-          		isLangSet = SplashScreen.getDefaults("isLangSet" , getApplicationContext()); 		
-          		
-          		Log.d("isLangSet= ",isLangSet);
+            	
+                  passKey= "false";
+                  
+                  passKey = SplashScreen.getDefaults("passKey" , getApplicationContext());
+                  
+          		Log.d("passKey= ",passKey);
           		
           		
-          		if(isLangSet.contentEquals("false")){
-          			Intent i = new Intent(SplashScreen.this,ChooseLanguageActivity.class);
+          		if(passKey.contentEquals("0212")){
+          			Intent i = new Intent(SplashScreen.this,MainMenuActivity.class);
           			startActivity(i);
           		}
           		else
-          			if(isLangSet.contentEquals("true"))
-          			{
+          		{
           			
-          				activityLocale=getApplicationContext().getResources().getConfiguration().locale;
-          				
-          				if (lang.contentEquals("EN")) {
-          			    	
-          			    	
-          			    	  Localization.setLanguage(getApplicationContext(), "en",activityLocale); 
-          			    	 
-          				}		
-          			 		
-          				if (lang.contentEquals("HIN")) {
-          			    	
-          			    	 Localization.setLanguage(getApplicationContext(), "hi",activityLocale); 
-          			   	  
-          				}
-          				Toast.makeText(getApplicationContext(), "lang Already Exists", 1000).show();
-          				
-          				Intent i = new Intent(SplashScreen.this,MainMenuActivity.class);
+          				Intent i = new Intent(SplashScreen.this,PasskeyActivity.class);
           				startActivity(i);
           			}
           		
