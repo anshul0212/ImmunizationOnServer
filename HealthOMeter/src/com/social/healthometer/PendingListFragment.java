@@ -10,19 +10,22 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
 import com.social.healthometer.adapter.CustomArrayAdapter;
 import com.social.healthometer.model.TodoItem;
 import com.social.utilities.ServiceHandler;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -43,16 +46,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 //import android.widget.AdapterView.OnItemClickListener;
 
-
-
-
-
-
-
-
-import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
-
-
 public class PendingListFragment extends Fragment implements OnItemClickListener  
 {
 	 
@@ -62,8 +55,7 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	 String[] code;
 	 SparseBooleanArray mCheckStates ;
 	 private CustomArrayAdapter customArrayAdapter;
-	 private MobileServiceClient mClient;
-		private MobileServiceTable<TodoItem> mToDoTable;
+		private ProgressDialog pd;
 		Boolean ready;
 		ListView mylistview ;
 	 String url_add_beneficiary;
@@ -108,44 +100,15 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 		btnObjVerified.setOnClickListener( new OnClickListener() {
             @Override
             public void onClick(View view) {
-            	 SparseBooleanArray checked = mylistview.getCheckedItemPositions();
             	
-            
-            	 //ShowMessage("click",""+ "verify" );
+            	int y1 = mylistview.getCount() ;
             	
-            	 TodoItem planet ;
-            	int y = mylistview.getCount() ;
-            	  for (int i = 0; i < y; i++)
-            	  {
-            		  
-            		  
-            		  
-            		 // ShowMessage("i=","count-"+mylistview.getCount() ); 
-            		   planet = customArrayAdapter.getItem(i);
-            		  
-            		   
-            		//   ShowMessage("for","check-"+ planet.isChecked()+" name= "+planet.getText() );
-            		 
-            		
-                      if ( planet.isChecked()	)
-                      {
-                    	  
-                    	//  SaveClicked( planet.getText() , planet.getNotifyNumber(),  planet.getSex() );
-                    	 
-                    	 SaveClicked( planet );
-                    	  listItems.remove(i);
-                    	 y-- ;
-                    	 i-- ;
-
-                      } 
-                     
-
-                  }
-            	  customArrayAdapter.notifyDataSetChanged(); 
-                  mylistview.clearChoices(); 
-                  ShowMessage("Success","Verified Successfully." );	 
-                   
-         
+            	
+                
+            	if(y1>0)
+            	{
+            		createDialog();
+            	}
             	
             }});
 		
@@ -160,101 +123,191 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 
 	 }
 
-	public static TodoItem ITEM_TO_EDIT = null;
 
+	public void createProgress()
+	{
+		String Processing = getResources().getString(R.string.Processing);
+		String pleaseWait = getResources().getString(R.string.PleaseWait);
+		
+	pd = new ProgressDialog(this.getActivity());
+	pd.setTitle(Processing);
+	pd.setMessage(pleaseWait);
+	pd.setCancelable(false);
+	pd.setIndeterminate(true);
+	pd.show();
+	}
+	public void dismissProgress()
+	{
+		
+		if (pd!=null) {
+			pd.dismiss();
+			
+		}
+	}
+	private void createDialog() {
+		 
+	    AlertDialog.Builder alertDlg = new AlertDialog.Builder(this.getActivity());
 	 
+	     
+	
+		  alertDlg.setMessage(getString(R.string.ConfirmationVerifiy));
+		
+	 
+	    alertDlg.setCancelable(false); // We avoid that the dialong can be cancelled, forcing the user to choose one of the options
+	 
+	    alertDlg.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+			 
+		       
+			 
+		      public void onClick(DialogInterface dialog, int id) {
+		 
+		    	  VerifyRecords verifyRecords= new VerifyRecords();
+	            	verifyRecords.execute();
+	            	 }
+		 
+		    }
+		 
+		     );
+		 
+		     alertDlg.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+		 
+		    @Override
+		 
+		    public void onClick(DialogInterface dialog, int which) {
+		 
+		      // We do nothing
+		 
+		    }
+		 
+		    });
+	 
+	  
+	 
+	     alertDlg.create().show();
+	  }
 	private class VerifyRecords extends AsyncTask<Void , Void , Void>
 	{
         String url_add_beneficiary ;
+        String networkFlag ;
+        int count;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            createProgress();
+            networkFlag = new String("0");
+            count=0;
+    	}
+        
 		@Override
 		protected Void doInBackground(Void... arg0) {
 			// TODO Auto-generated method stub
 			 // Creating service handler class instance
-            ServiceHandler sh = new ServiceHandler();
-          
-             url_add_beneficiary = getString(R.string.url_add_beneficiary);
-    		
-            
-            String id = PendingListFragment.ITEM_TO_EDIT.getId();
-            
-            Log.d("id========",id);
-            // Making a request to url and getting response
-            
-            url_add_beneficiary = url_add_beneficiary+id+"/";
-            
-            Log.d("url_add_beneficiary1",url_add_beneficiary);
-            
-            
-            // Building post parameters, key and value pair
-               List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
-               //nameValuePair.add(new BasicNameValuePair("Id", "1"));
-               
-               nameValuePair.add(new BasicNameValuePair("is_verified", "1"));
-             
-               Log.d("url_add_beneficiary2",url_add_beneficiary);
-            
-            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST , nameValuePair) ;
-            
-            Log.d("Response: ", "> " + jsonStr);
-           
 			
+			TodoItem item = new TodoItem();
+			 url_add_beneficiary = getString(R.string.url_add_beneficiary);
+			 int y= mylistview.getCount() ;
+         	
+         	
+        	 for (int i = 0; i < y; i++)
+        	  {
+        		  networkFlag ="1";
+        		  item = customArrayAdapter.getItem(i);
+        		
+                  if ( item.isChecked()	)
+                  {
+                	  String id = item.getId();
+                    
+                    // Making a request to url and getting response
+                    
+                    url_add_beneficiary = url_add_beneficiary+id+"/";
+                    
+                    // Building post parameters, key and value pair
+                       List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
+                       //nameValuePair.add(new BasicNameValuePair("Id", "1"));
+                       
+                       nameValuePair.add(new BasicNameValuePair("is_verified", "1"));
+                     
+                       Log.d("url_add_beneficiary2",url_add_beneficiary);
+                       ServiceHandler sh = new ServiceHandler();
+                       
+                    String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST , nameValuePair) ;
+            
+                   
+                    if(jsonStr == null)
+                    {
+                    	networkFlag ="2";
+                    	break;
+                    }
+                    count++;
+                    Log.d("Response: ", "> " + jsonStr);
+                   
+                    
+                    
+                	  listItems.remove(i);
+                	 y-- ;
+                	 i-- ;
+
+                  } 
+        	  }
+        	
+        	
 			return null;
 		}
 		
+		  @Override
+		    protected void onPostExecute(Void result) {
+				super.onPostExecute(result);
+			if(networkFlag.contentEquals("1"))
+			{
+			  dismissProgress();
+			  customArrayAdapter.notifyDataSetChanged(); 
+              mylistview.clearChoices();
+              if( count >0)
+              ShowMessage(getString(R.string.Success),count+" "+getString(R.string.Records)+" "+getString(R.string.VerifiedSuccess) , getResources().getDrawable(R.drawable.checkmark) );
+              else
+              {
+            	  
+              }
+			}
+			else
+				if(networkFlag.contentEquals("2"))
+				{
+				 dismissProgress();
+				 ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+		    		
+			}
+				
+             
+		  }
+		    
+			  
 		
 	}
 	
-		//public void SaveClicked(String nameEditText ,String cellNoEditText, String sex )
-		public void SaveClicked(TodoItem item  )
-		{
-			ITEM_TO_EDIT = item;
 		
-			VerifyRecords verifyRecords = new VerifyRecords();
-			verifyRecords.execute();
-			
-			/*
-			PendingListFragment.ITEM_TO_EDIT.setComplete(true);
-			//ShowMessage("exception", ViewDetailFragment.ITEM_TO_EDIT.toString());  
-			 
-			mToDoTable.update(PendingListFragment.ITEM_TO_EDIT, new TableOperationCallback<TodoItem>() {
-			      public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) {
-			    	    
-			            if (exception == null) 
-			            {
-			            		
-			     
-			            } 
-			            else 
-			            {
-			            	ShowMessage("exception", exception.toString());  
-			            	//	ShowMessage("Failed", "Cannot be Updated");
-			            }
-			      }
-			      });
-			*/
-		}
 		
 		
 	 @Override
 	 public void onItemClick(AdapterView<?> parent, View view, int position,
 	   long id) {
 		
-		 Toast.makeText(getActivity().getApplicationContext(), "df", Toast.LENGTH_SHORT).show();
-	
 	 }
 	 
 
 	    
 	    private class PopulatePendingDetails extends AsyncTask<Void, Void, Void> 
 	    {
-	    	 ArrayList<TodoItem> arrayItem = new ArrayList<TodoItem>();
-	            
+	    	 String  jsonStr;
+	    	 ArrayList<TodoItem> arrayItem ;
+	            String hw_number;
 	    	// ProgressDialog pDialog= new ProgressDialog(context);
 	    	@Override
 	        protected void onPreExecute() {
 	            super.onPreExecute();
+	            arrayItem = new ArrayList<TodoItem>();
+	            jsonStr = new String();
 	            
-	          //  createProgress();
+	            createProgress();
 	    
 	    	}
 		
@@ -263,13 +316,21 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	        {
 	            // Creating service handler class instance
 	            ServiceHandler sh = new ServiceHandler();
-	          
+	            
+                url_add_beneficiary = getString(R.string.url_add_beneficiary);
+       		
 	            // Making a request to url and getting response
+	          
+	            hw_number= "false";
+	            
+	            hw_number = ViewDetailFragment.getDefaults("mobileNo" , getActivity());
+	            
+	        
+	   		 
+	            url_add_beneficiary = url_add_beneficiary+"?is_verified=0"+"&hw_num="+hw_number;
 	            Log.d("url_add_beneficiary",url_add_beneficiary);
 	        	
-	   		 
-	            url_add_beneficiary = url_add_beneficiary+"?is_verified=0";
-	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
+	              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
 	            Log.d("Response: ", "> " + jsonStr);
 	           
@@ -287,29 +348,7 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	                		JSONObject c = jArray.getJSONObject(i);
 	                		 TodoItem item = new TodoItem();
 	                   
-	                		 /*
-	                		  * name
-								notif_num
-								dob
-								sex
-								gaurdian_name
-								language
-								hw_num
-								
-								{
-    "notify_number": "9390681183",
-    "health_worker_phone": "9390681183",
-    "sex": "M",
-    "gaurdian_name": "mahesh",
-    "lang": "HIN",
-    "reg_code": 7799,
-    "ModifiedOn": "2014-08-19T17:04:21Z",
-    "name": "suresh",
-    "dob": "2014-08-15",
-    "is_verified": false,
-    "Id": "p8otBedSSMOdKAPoaO1JiQ"
-}
-	                		  */
+	                		
 	                		 String name = c.getString("name");
 	                		 String dob = c.getString("dob");    
 	                		 String notify_number = c.getString("notify_number");
@@ -335,8 +374,6 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	                		 item.setId(Id);
 	                		 
 	                		 
-	                		 
-	                		 
 	                        arrayItem.add(item);
 	                        Log.d("itemgetText: ", "> " + item.getText());
 	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
@@ -357,33 +394,50 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 		    protected void onPostExecute(Void result) {
 		    
 		    	super.onPostExecute(result);
+		    	
+		    	Log.d("jsonStr: ", "> " + jsonStr);
 		    	 Log.d("arrayItem: ", "> " + arrayItem);
-		    	 Iterator<TodoItem> itr =  arrayItem.iterator();
-		    	 
-		    	int er =0;
-		    	while(itr.hasNext())
-		    	{
-		    	// Log.d("arrayItem: ", "> " +);
-		    	// er++;
-		    		customArrayAdapter.add(itr.next());
-		    	}
+		    	 if(jsonStr != null)
+		    	 {
+		    		 if(jsonStr.length() > 2)
+		    		 {
+		    			 Iterator<TodoItem> itr =  arrayItem.iterator();
+				    	 
+		 		    	int er =0;
+		 		    	while(itr.hasNext())
+		 		    	{
+		 		    	// Log.d("arrayItem: ", "> " +);
+		 		    	// er++;
+		 		    		customArrayAdapter.add(itr.next());
+		 		    	}
+		 		    	dismissProgress();
+		 		    	
+		    		 }
+		    		 else
+		    		 {
+		    			 dismissProgress();
+		    			 ShowMessage(getString(R.string.Information), getString(R.string.NoSearchResult ), getResources().getDrawable(R.drawable.info) );
+		 		    	
+		    		 }
+		    	 }
+		    	 else
+		    	 {
+		    		 
+		    		 dismissProgress();
+		    			ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+			    		
+		    	 }
+		    		 
 		    	
 		    	
-		    	 
-		    	//
-		    	//customArrayAdapter.notifyDataSetChanged();	  
-		    	/*
-		    	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-		    	etName.setText(user.get("name"));
 		    	
-		    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth);
-		    	etDate.setText(user.get("dob"));
-		    	//dismissProgress();
-		    	*/
 		    }    
 	    }
 	    
-	    
+	    public static String getDefaults(String key, Context context) {
+		    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		    return preferences.getString(key, "false");
+		}
 
 	 private void refreshItemsFromTable() {
 
@@ -393,35 +447,17 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 		 PopulatePendingDetails populatePendingDetails = new PopulatePendingDetails();
 		 
 		 populatePendingDetails.execute();
-		 /*
-			mToDoTable.where().field("complete").eq(val(false)).execute(new TableQueryCallback<TodoItem>() {
-				
-				public void onCompleted(List<TodoItem> result, int count, Exception exception, ServiceFilterResponse response) {
-					
-					if (exception == null) {
-						customArrayAdapter.clear();
-						
-						for (TodoItem item : result) {
-							customArrayAdapter.add(item);
-						}
-
-						customArrayAdapter.notifyDataSetChanged();	  
-					} else {
-						ShowMessage("exception", exception.toString());
-					}
-				}
-			});
-			
-			*/
+	
 		}
 
-		public void ShowMessage(String title, String message)
+		public void ShowMessage(String title, String message , Drawable drawable)
 		{
 			AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
-
+			builder.setInverseBackgroundForced(true);
+			
 			builder.setMessage(message);
 			
-			builder.setIcon(R.drawable.ic_action_done);
+			builder.setIcon(drawable);
 			builder.setTitle(title);
 			builder.create().show();
 		}

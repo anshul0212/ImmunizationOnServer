@@ -1,32 +1,16 @@
 package com.social.healthometer;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.sql.Date;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
 import com.social.actionlisteners.ButtonClickListener;
 import com.social.healthometer.model.TodoItem;
 import com.social.utilities.ServiceHandler;
@@ -37,6 +21,8 @@ import android.app.ProgressDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -44,35 +30,24 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
 import android.text.InputType;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
-import android.widget.Toast;
+
 
 public class FragmentAddDetails extends Fragment implements OnDateSetListener,OnTouchListener,OnClickListener  {
-	 private ProgressBar spinner;
-	 
-	 TelephonyManager telephonyManager;
-		
-	 String namePrev , dobPrev , cellNoPrev ;
-		String deviceNum , imei;
-	private MobileServiceClient mClient;
-	private Boolean ready;
+	
+	String deviceNum , imei;
 	RadioButton maleRadioButton;
 	RadioButton femaleRadioButton;
 	Button submitButton;
@@ -80,14 +55,12 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	EditText nameEditText;
 	EditText cellNoEditText;
 	DatePicker DOBDatePicker;
-	private Button searchButton;
-	private EditText searchEditText;
-	private ListView listView;
+
 	//private DatePicker datePicker;
 	private EditText dateOfbirth;
-	private MobileServiceTable<TodoItem> mToDoTable;
+	
 	private TodoItem item;
-    private int mYear, mMonth, mDay,mHour,mMinute; 
+    private int mYear, mMonth, mDay; 
     
     String  url_add_beneficiary;
     private Context context;
@@ -110,16 +83,11 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		context = this.getActivity();
 		View rootView = inflater.inflate(R.layout.fragment_add_edit_details, container, false);
 		
-		url_add_beneficiary = getString(R.string.url_add_beneficiary);
-		
-	      
-			//Log.d("deviceNum", deviceNum);
 		
 		return rootView;
 	}
 	
-    
-    /////////
+
 	public void SubmitClicked(View view)
 	{
 		Button submitButton1 = (Button)getActivity().findViewById(R.id.button1);
@@ -138,42 +106,114 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		}
 		else
 		{
-		Log.d("update clickced", "msg:");
-		
-		GetProfileDetails addBenificiary = new GetProfileDetails();
-		addBenificiary.execute();
-		
-		if(item !=null)
-		{
-			nameEditText.setEnabled(false);
-			maleRadioButton.setEnabled(false);
-			femaleRadioButton.setEnabled(false);
-			dateOfbirth.setEnabled(false);
-			cellNoEditText.setEnabled(false);
-			submitButton1.setText("Edit");
-			deleteButton.setVisibility(View.GONE);
-		}
-		}
-		
-	}
+	
+		EditText	 etName1 = (EditText)getActivity().findViewById(R.id.enter_name_text);
+	    	String name1 = etName1.getText().toString();
+	    	
+	    	EditText	 etNotifyNum1 = (EditText)getActivity().findViewById(R.id.phone_num_text);
+	    	String	notify_num1 = etNotifyNum1.getText().toString();
+	    	
+	    	EditText	 etDate1 = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+	    	String dob1 = etDate1.getText().toString();
+	    
+	    	if(name1.equals("")||notify_num1.equals("")||dob1.equals(""))
+	    	{
+	    		
+	    
+			 ShowMessage(getString(R.string.Information), getString(R.string.FillMandatory), getResources().getDrawable(R.drawable.info) );
+	    		
+		 }
+		 else
+		 {
+			 addUpdateDialog();
 
-    
-    
+			 if(item !=null)
+				{
+					nameEditText.setEnabled(false);
+					maleRadioButton.setEnabled(false);
+					femaleRadioButton.setEnabled(false);
+					dateOfbirth.setEnabled(false);
+					cellNoEditText.setEnabled(false);
+					submitButton1.setText("Edit");
+					deleteButton.setVisibility(View.GONE);
+				}
+		 }
+		
+		}
+	
+		 
+	}
+	 private void addUpdateDialog() {
+		 
+		    AlertDialog.Builder alertDlg = new AlertDialog.Builder(this.getActivity());
+		 
+		     
+		 if(item!=null)
+		    alertDlg.setMessage(getString(R.string.ConfirmationUpdate));
+		 else
+			  alertDlg.setMessage(getString(R.string.ConfirmationAdd));
+			
+		 
+		    alertDlg.setCancelable(false); // We avoid that the dialong can be cancelled, forcing the user to choose one of the options
+		 
+		    alertDlg.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+				 
+			       
+				 
+			      public void onClick(DialogInterface dialog, int id) {
+			 
+			    	  GetProfileDetails addBenificiary = new GetProfileDetails();
+						 addBenificiary.execute();
+			           }
+			 
+			    }
+			 
+			     );
+			 
+			     alertDlg.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+			 
+			    @Override
+			 
+			    public void onClick(DialogInterface dialog, int which) {
+			 
+			      // We do nothing
+			 
+			    }
+			 
+			    });
+		 
+		  
+		 
+		     alertDlg.create().show();
+		  }
+
     private class GetProfileDetails extends AsyncTask<Void, Void, Void> 
     {
     	HashMap<String, String> user;
-    	 String  jsonStr, flagNetwork;
-    	String name, dob , notify_num, sex , hw_number;
-    	EditText etName, etDate,etNotifyNum;
+    	 String  jsonStr, flagNetwork , hw_number;
     	
-    	// ProgressDialog pDialog= new ProgressDialog(context);
-    	@Override
+    	 String namePrev , dobPrev , cellNoPrev, sexPrev ;
+    	
+    	  EditText etName, etDate,etNotifyNum;
+       
+    	  @Override
         protected void onPreExecute() {
             super.onPreExecute();
+           Log.d("in pre", "preee");
+            hw_number = new String("");
+            
+            jsonStr = new String();
+            
+            namePrev = new String();
+            dobPrev = new String();
+            cellNoPrev = new String();
+            sexPrev= new String();
+            url_add_beneficiary = getString(R.string.url_add_beneficiary);
+    		
             flagNetwork = "0";
+            
             createProgress();
-            
-            
+ 
     	}
    	 
     	
@@ -187,33 +227,47 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     					 namePrev = item.getText();
     					 dobPrev = item.getDateOfBirth();
     					 cellNoPrev =item.getNotifyNumber();
-    						
+    					 sexPrev = item.getSex();
+    					 
     				      String  dateOfbirth=((EditText)getActivity().findViewById(R.id.date_of_birth_text)).getText().toString();
-    				       // maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
-    				       // femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
+    				       maleRadioButton = (RadioButton)getActivity().findViewById(R.id.male_radio);
+    				       femaleRadioButton = (RadioButton)getActivity().findViewById(R.id.female_radio);
+    				       String sex = new String();
+    				       
+    				       if(maleRadioButton.isChecked())
+    				    	   sex =   "M";
+    				       else
+    				    	   if(femaleRadioButton.isChecked())
+    				    		  sex =   "F";
+    				       
     				      String  nameEditText = ((EditText)getActivity().findViewById(R.id.enter_name_text)).getText().toString();
-    				    String	cellNoEditText = ((EditText)getActivity().findViewById(R.id.phone_num_text)).getText().toString();
+    				     String	cellNoEditText = ((EditText)getActivity().findViewById(R.id.phone_num_text)).getText().toString();
     				    	
     				    	
-    					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoPrev))
+    					if(dateOfbirth.contentEquals(dobPrev)&&nameEditText.contentEquals(namePrev)&&cellNoEditText.contentEquals(cellNoPrev)&&sex.contentEquals(sexPrev))
     					{
     						flagNetwork= "1";
     						return null;
     					}
-    					else
-    						{
+    					else	
+    					{
     						url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
-    						
-    						
-    						}
+    					}
     				
     				}
     				else
     				{
     					
     				}
-    		 
-      
+    				
+    		String name, dob , notify_num, sex ;
+    		 name = new String();
+             notify_num = new String();
+             
+             dob = new String();
+             sex = new String();
+             
+           
         	 etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
 	    	name = etName.getText().toString();
 	    	
@@ -240,8 +294,9 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    	dob = dob + dobaArray[2] +"/"+ dobaArray[1] +"/"+ dobaArray[0] ;
 	    	}
 	    	else
+	    	{
 	    		 Log.d("dob","dob is null");
-	    		
+	    	}	
         	
             // Creating service handler class instance
             ServiceHandler sh = new ServiceHandler();
@@ -250,50 +305,60 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
             // Making a request to url and getting response
             Log.d("url_add_beneficiary",url_add_beneficiary);
             
-            hw_number= "false";
+            hw_number= "";
             
             hw_number = FragmentAddDetails.getDefaults("mobileNo" , context);
             
-        
-         // Building post parameters, key and value pair
-            List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
-            //nameValuePair.add(new BasicNameValuePair("Id", "1"));
-            nameValuePair.add(new BasicNameValuePair("name", name));
-           nameValuePair.add(new BasicNameValuePair("notif_num", notify_num));
-            nameValuePair.add(new BasicNameValuePair("dob", dob));
-            nameValuePair.add(new BasicNameValuePair("sex", sex));
-      		
-            nameValuePair.add(new BasicNameValuePair("hw_num", hw_number));
-            
-      		
-            
-              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
-            
-            Log.d("Response: ", "> " + jsonStr);
- 
-            if (jsonStr != null) {
-                try {
-                	JSONObject c = new JSONObject(jsonStr);
-                     
-                   
-                        String name = c.getString("name");
-                        String dob = c.getString("dob");             
-                        user = new HashMap<String, String>();
-                        // adding each child node to HashMap key => value
-                        user.put("name", name);
-                        user.put("dob", dob);
-                     
-                       Log.d("user: ", "> " + user);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }  
-            } else {
+            if(hw_number.contentEquals(""))
+            {
+            	jsonStr=null;
             	
-            
-                Log.e("ServiceHandler", "Couldn't get any data from the url");
             }
+            else
+            {
+		         // Building post parameters, key and value pair
+		            List<NameValuePair> nameValuePair = new ArrayList<NameValuePair>(5);
+		            //nameValuePair.add(new BasicNameValuePair("Id", "1"));
+		            nameValuePair.add(new BasicNameValuePair("name", name));
+		           nameValuePair.add(new BasicNameValuePair("notif_num", notify_num));
+		            nameValuePair.add(new BasicNameValuePair("dob", dob));
+		            nameValuePair.add(new BasicNameValuePair("sex", sex));
+		      		
+		            nameValuePair.add(new BasicNameValuePair("hw_num", hw_number));
+		            
+		            Log.d("name", ""+name);
+					Log.d("notify_num", ""+notify_num);
+						Log.d("dob", ""+dob);
+						Log.d("hw_number", hw_number);
+		            
+		              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
+		            
+		            Log.d("Response: ", "> " + jsonStr);
+		 
+		            if (jsonStr != null) 
+		            {
+		                try {
+		                	JSONObject c = new JSONObject(jsonStr);
+		                     
+		                   
+		                        String nameResponse = c.getString("name");
+		                        String dobResponse = c.getString("dob");             
+		                        user = new HashMap<String, String>();
+		                        // adding each child node to HashMap key => value
+		                        user.put("name", nameResponse);
+		                        user.put("dob", dobResponse);
+		                     
+		                       Log.d("user: ", "> " + user);
+		                       
+		                  
+		                } catch (JSONException e) {
+		                    e.printStackTrace();
+		                }  
+		            } else {
+		          
+		            }
             
-            
+            }
             return null;    
         }
 	     
@@ -302,59 +367,114 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    
 	    	super.onPostExecute(result);
 	    	
-	    	if(jsonStr != null)
-	    	{
-	    		if(item!=null)
-	    		ShowMessage(getString(R.string.Success), getString(R.string.AddedSuccess), getResources().getDrawable(R.drawable.checkmark) );
-	    	else
-	    		ShowMessage(getString(R.string.Success), getString(R.string.UpdatedSuccess), getResources().getDrawable(R.drawable.checkmark) );
-	    	
-	    		etName.setText("");
-	    		etDate.setText("");
-	    		etNotifyNum.setText("");
-	        	
-	    	}
-	    	else
+	    	if(jsonStr== null||jsonStr.length()==2)
 	    	{
 	    		if(flagNetwork.contentEquals("1"))
 	    		{
 	    			
 	    		}
 	    		else
-	    		ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+	    			if(hw_number.contentEquals(""))
+		    			ShowMessage(getString(R.string.Information), "No Hardware Key", getResources().getDrawable(R.drawable.info) );
+	    			else	
+	    				ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
 	    		
-	    	}
-        	
-        	
-	    	/*
-	    	if(user.isEmpty())
-	    	{
-	    		
+	    	
 	    	}
 	    	else
 	    	{
-	    		EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-	    		if(user.containsKey("name"))
-	    		etName.setText(user.get("name"));
+	    		if(item!=null)
+	    		{
 	    	
-	    		EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
-	    		if(user.containsKey("dob"))
-	    		etDate.setText(user.get("dob"));
+	    			if(jsonStr.contentEquals("Vaccination Beneficiary ID is not correct"))
+	    			{
+	    				ShowMessage(getString(R.string.Information), getString(R.string.BenificiaryDonotExist) , getResources().getDrawable(R.drawable.info) );
+			    		
+	    			}
+	    			else
+		    		ShowMessage(getString(R.string.Success), getString(R.string.UpdatedSuccess), getResources().getDrawable(R.drawable.checkmark) );
+		    		
+	    		}	
+	    		else
+		    	{
+		    		ShowMessage(getString(R.string.Success), getString(R.string.AddedSuccess ), getResources().getDrawable(R.drawable.checkmark) );
+		    	
+		    		etName.setText("");
+		    		etDate.setText("");
+		    		etNotifyNum.setText("");
+		    		}
+	    		
+	    		
+	    	
 	    	}
-	    	*/
+        
 	    	dismissProgress();
 	    	
 	    }    
     }
     
     ////////////
-    
+    private void deleteDialog() {
+		 
+	    AlertDialog.Builder alertDlg = new AlertDialog.Builder(this.getActivity());
+	
+	    alertDlg.setMessage(getString(R.string.ConfirmationDelete));
+		
+	 
+	    alertDlg.setCancelable(false); // We avoid that the dialong can be cancelled, forcing the user to choose one of the options
+	 
+	    alertDlg.setPositiveButton(getString(R.string.Yes), new DialogInterface.OnClickListener() {
+			 
+		       
+			 
+		      public void onClick(DialogInterface dialog, int id) {
+		 
+		    	  DeleteRecord deleteRecord = new DeleteRecord();
+		        		deleteRecord.execute();
+		        		if(item !=null)
+						{
+
+		        			Button submitButton1 = (Button)getActivity().findViewById(R.id.button1);
+		        			
+		        			Button deleteButton = (Button)getActivity().findViewById(R.id.btn_deleteId);
+		        			
+		        			
+							nameEditText.setEnabled(false);
+							maleRadioButton.setEnabled(false);
+							femaleRadioButton.setEnabled(false);
+							dateOfbirth.setEnabled(false);
+							cellNoEditText.setEnabled(false);
+							submitButton1.setText("Edit");
+							deleteButton.setVisibility(View.GONE);
+						}
+		        		 }
+		 
+		    }
+		 
+		     );
+		 
+		     alertDlg.setNegativeButton(getString(R.string.No), new DialogInterface.OnClickListener() {
+		 
+		    @Override
+		 
+		    public void onClick(DialogInterface dialog, int which) {
+		 
+		      // We do nothing
+		 
+		    }
+		 
+		    });
+	 
+	  
+	 
+	     alertDlg.create().show();
+	  }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-         onClickListener=new ButtonClickListener(this.getActivity());
+         onClickListener = new ButtonClickListener(this.getActivity());
          menuButton = (Button)getActivity().findViewById(R.id.menuadd_button_id);
          menuButton.setOnClickListener(onClickListener);
          deleteItem = (Button)getActivity().findViewById(R.id.btn_deleteId);
@@ -362,9 +482,27 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
          deleteItem.setOnClickListener(
    		        new Button.OnClickListener() {
    		        	public void onClick(View v) {
-   		        		DeleteRecord deleteRecord = new DeleteRecord();
-   		        		deleteRecord.execute();
    		        		
+   		        		EditText	 etName1 = (EditText)getActivity().findViewById(R.id.enter_name_text);
+   		 	    	String name1 = etName1.getText().toString();
+   		 	    	
+   		 	    	EditText	 etNotifyNum1 = (EditText)getActivity().findViewById(R.id.phone_num_text);
+   		 	    	String	notify_num1 = etNotifyNum1.getText().toString();
+   		 	    	
+   		 	    	EditText	 etDate1 = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
+   		 	    	String dob1 = etDate1.getText().toString();
+   		 	    
+   		 	    	if(name1.equals("")||notify_num1.equals("")||dob1.equals(""))
+   		 	    	{
+   		 	    		
+   		 	    
+   		 			 ShowMessage(getString(R.string.Information), getString(R.string.FillMandatory), getResources().getDrawable(R.drawable.info) );
+   		 	    		
+   		 		 }
+   		 		 else
+   		 		 {
+   		        		deleteDialog();
+   		 		 }	
    		        		}
    		        	}
    		        );
@@ -431,8 +569,10 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 				nameEditText.setText(item.getText());
 			}
 			else
+			{
 				nameEditText.setText("");
-
+				nameEditText.setHint("");
+			}
 		
 			
 			if (item.getSex().contentEquals("M")) {
@@ -448,30 +588,25 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 			
 			if(item.getDateOfBirth() != null)
 			{
-				Log.d("dob not null", item.getDateOfBirth() );
 				dateOfbirth.setText(item.getDateOfBirth());
 			}
 			else
 			{
+				dateOfbirth.setText("");
 				dateOfbirth.setHint("");
-				Log.d("dob", "null");
+			
 			}
 			
 			if(item.getMobileNumber() != null)
 			{
-				Log.d("mob not null", item.getMobileNumber() );
-				
 				cellNoEditText.setText(item.getMobileNumber());
 			}
 			else{
-				Log.d("mob", "null");
+				cellNoEditText.setText("");
 				cellNoEditText.setHint("");
 			}
 			
 			
-		 namePrev = nameEditText.getText().toString();
-		 dobPrev = dateOfbirth.getText().toString();
-		 cellNoPrev =cellNoEditText.getText().toString();;
 			
 			nameEditText.setEnabled(false);
 			maleRadioButton.setEnabled(false);
@@ -479,14 +614,11 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 			dateOfbirth.setEnabled(false);
 			cellNoEditText.setEnabled(false);
 			submitButton.setText("Edit");
-			
 		}
 		else
 		{
-			Log.d("item is null" , "");
-		}	
-		//cellNoEditText.setText(deviceNum);
-        
+					}	
+	  
 	}
 	
 	 
@@ -529,7 +661,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 
 	public static String getDefaults(String key, Context context) {
 	    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-	    return preferences.getString(key, "false");
+	    return preferences.getString(key, "");
 	}
 
 	public void ShowMessage(String title, String message, Drawable drawable )
@@ -537,7 +669,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		AlertDialog.Builder builder = new AlertDialog.Builder(this.getActivity());
 
 		builder.setMessage(message);
-		
+	
 		builder.setIcon(drawable);
 		builder.setTitle(title);
 		builder.create().show();
@@ -565,22 +697,6 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	}
 	
 	
-	private boolean isNetworkAvailable() {
-	    ConnectivityManager connectivityManager 
-	          = (ConnectivityManager) this.getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-	    NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-	    return activeNetworkInfo != null &&
-	    		activeNetworkInfo.isConnectedOrConnecting();
-	   
-	}
-	
-	public void updateInfo()
-	{
-		
-		
-	}
-
-	
 	@Override
 	public void onClick(View v) {
 		 DatePickerDialog datePicker=  new DatePickerDialog(this.getActivity(), this, mYear, mMonth, mDay);
@@ -591,13 +707,19 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 
     private class DeleteRecord extends AsyncTask<Void, Void, Void> 
     {
-    	HashMap<String, String> user;
+    	
     	String name, dob , notify_num, sex , hw_number, jsonStr;
     	EditText etName, etDate,etNotifyNum;
     	// ProgressDialog pDialog= new ProgressDialog(context);
     	@Override
         protected void onPreExecute() {
             super.onPreExecute();
+            etName = (EditText)getActivity().findViewById(R.id.enter_name_text) ;
+            etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text) ;
+            etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text) ;
+            
+            url_add_beneficiary = getString(R.string.url_add_beneficiary);
+            jsonStr = new String();
             createProgress();
     	}
    	 
@@ -605,55 +727,20 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
         @Override
         protected Void doInBackground(Void... arg0) 
         {
-    				if(item!=null)
-    				{
-    					url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
-    				}
-    		 
-      
-        	 etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-	    	name = etName.getText().toString();
-	    	
-	    	 etNotifyNum = (EditText)getActivity().findViewById(R.id.phone_num_text);
-	    	notify_num = etNotifyNum.getText().toString();
-	    	
-	    	 etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
-	    	dob = etDate.getText().toString();
-	   
-	    	RadioButton etSex = (RadioButton)getActivity().findViewById(R.id.male_radio);
-	    	 if(etSex.isChecked())
-	    		 sex = "M";
-	    	 else
-	    		 sex = "F";
-	    	 
-	    	
-	    	if(dob!=null&&dob.contains("-"))
-	    	{
-	    	String dobaArray[] = new String[3];
-	    	
-	    	dobaArray = dob.split("-");
-	    	
-	    	dob = "";
-	    	dob = dob + dobaArray[2] +"/"+ dobaArray[1] +"/"+ dobaArray[0] ;
-	    	}
-	    	else
-	    		 Log.d("dob","dob is null");
-	    		
-        	
-            // Creating service handler class instance
-            ServiceHandler sh = new ServiceHandler();
-            Log.d("dob",dob);
+    		if(item!=null)
+    		{
+    			url_add_beneficiary = url_add_beneficiary+item.getId()+"/";
+    				
+    			// Creating service handler class instance
+    			ServiceHandler sh = new ServiceHandler();
+           
+    			// Making a request to url and getting response
+    			Log.d("url_add_beneficiary",url_add_beneficiary);
+               jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
             
-            // Making a request to url and getting response
-            Log.d("url_add_beneficiary",url_add_beneficiary);
-            
-        
-            
-              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
-            
-            Log.d("Response: ", "> " + jsonStr);
+               Log.d("Response: ", "> " + jsonStr);
  
-            
+    		}
             return null;    
         }
 	     
@@ -664,32 +751,51 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    	if(jsonStr != null)
 	    	{
 	    		
-	    		ShowMessage(getString(R.string.Success), getString(R.string.DeletedSuccess), getResources().getDrawable(R.drawable.checkmark) );
 	    		etName.setText("");
 	    		etDate.setText("");
 	    		etNotifyNum.setText("");
-	    	}
-	    	else
-	    		ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
-        	
-        	
-	    	/*
-	    	if(user.isEmpty())
-	    	{
+	    		dismissProgress();
 	    		
+	    		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+	    		builder.setMessage(getString(R.string.DeletedSuccess));
+	    	
+	    		builder.setIcon(getResources().getDrawable(R.drawable.checkmark));
+	    		builder.setTitle(getString(R.string.Success));
+	    		
+
+	    		builder.setPositiveButton(getString(R.string.Ok), new DialogInterface.OnClickListener() {
+	    			 
+	    		       
+	    			 
+	    		      public void onClick(DialogInterface dialog, int id) {
+	    		 
+	    		    	  Intent i = new Intent(getActivity(), ViewDetailFragment.class);
+	    					startActivity(i);
+	    		        		 }
+	    		 
+	    		    }
+	    		 
+	    		     );
+	    		
+	    		builder.create().show();
+	    		
+	    		//ShowMessage(), getString(R.string.DeletedSuccess), getResources(). );
+	    		
+	    		
+	    		//Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
+				
+			
+	    		//Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
+				
+			
 	    	}
 	    	else
 	    	{
-	    		EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-	    		//if(user.containsKey("name"))
-	    		etName.setText("");
-	    	
-	    		EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth_text);
-	    		//if(user.containsKey("dob"))
-	    		etDate.setText("");
+	    		dismissProgress();
+	    		ShowMessage(getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
 	    	}
-	    	*/
-	    	dismissProgress();
+	    	
 	    	
 	    }    
     }

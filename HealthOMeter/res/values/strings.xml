@@ -52,18 +52,34 @@
      	      <string name="AddedSuccess">Added Successfully!</string>
      	      <string name="DeletedSuccess">Deleted Successfully!</string>
      	       <string name="UpdatedSuccess">Updated Successfully!</string>
+     	   	 <string name="VerifiedSuccess">Verified Successfully!</string>
      	   	 
      	   	      <string name="NoNetwork">No Network Available!</string>
      	   	      <string name="Information">Information</string>
      	   	       <string name="wrongPasskey">Passkey entered is wrong. Please try again.</string>
      	   	      <string name="mobileNoUpdated">Mobile No updated successfully</string>
-     	   	      
+     	   	      <string name="FillMandatory">Please enter all details!</string>
+  
+     	   	       <string name="Records">records</string>
+     	   	       <string name="ConfirmationAdd">Are you sure you want to add ?</string>
+     	   	      <string name="ConfirmationUpdate">Are you sure you want to update ?</string>
+     	   	      <string name="ConfirmationVerifiy">Are you sure you want to verify ?</string>
+     	   	      <string name="ConfirmationDelete">Are you sure you want to delete ?</string>
+     	   	       <string name="BenificiaryDonotExist">Record does not exist.</string>
+     	   	      <string name="Ok">Ok</string>
+     	   	       
+     	   	       <string name="Yes">Yes</string>
+     	   	       <string name="No">No</string>
+     	   	       
+  
      	   	         <string name="update">Update</string>
   <string name="Save">Save</string>
    	 <string name="hwsetting">Health Worker Settings</string>
+   	  <string name="NoSearchResult">No Item exist !</string>
   
   <string name="url_add_beneficiary">http://promdhost.in/vaccination/beneficiary/</string>
- 
+<string name="url_get_beneficiary">http://promdhost.in/vaccination/beneficiary</string>
+  
     <string-array name="languages">
         <item>Select</item>
         <item>English</item>

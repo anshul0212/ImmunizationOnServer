@@ -1,11 +1,7 @@
 package com.social.healthometer;
-import static com.microsoft.windowsazure.mobileservices.MobileServiceQueryOperations.*;
 
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,51 +9,36 @@ import org.json.JSONObject;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
 import android.app.ActionBar.OnNavigationListener;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+
 import android.preference.PreferenceManager;
-import android.telephony.TelephonyManager;
+
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ExpandableListView.OnGroupCollapseListener;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
-import android.widget.ExpandableListView;
 import android.widget.ListView;
 
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceQuery;
-import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
-import com.microsoft.windowsazure.mobileservices.TableQueryCallback;
 import com.social.healthometer.adapter.CustomArrayAdapter;
-import com.social.healthometer.adapter.ExpandableListAdapter;
+
 import com.social.healthometer.model.TodoItem;
-import com.social.healthometer.model.SearchFilterItem;
+
 import com.social.utilities.ServiceHandler;
 
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.ExpandableListView.OnGroupClickListener;
 
 
 
@@ -67,11 +48,11 @@ public class ViewDetailFragment extends Activity {
 	private Button searchButton;
 	private EditText searchEditText;
 	private ListView listView;
-  
+	
+	private ProgressDialog pd;
 	private CustomArrayAdapter customArrayAdapter;
 	private ArrayList<TodoItem> listItems;
-	private MobileServiceClient mClient;
-	private MobileServiceTable<TodoItem> mToDoTable;
+	
 	Boolean ready;
 	 /** An array of strings to populate dropdown list */
     String[] actions = new String[] {
@@ -130,24 +111,13 @@ public class ViewDetailFragment extends Activity {
 	    				default:
 	    				    break;
 	    				}
-
-	    			
 	    				return true;
 	    			    }
-	    	    
-	    	      
-	    	    
 	    	};
 
-
-
 	    	/** Setting dropdown items and item navigation listener for the actionbar */
-	    	getActionBar().setListNavigationCallbacks(adapter, navigationListener);
-
-	    	    
+	    	getActionBar().setListNavigationCallbacks(adapter, navigationListener);  
 	    	final Button btnMenu = (Button) findViewById(R.id.menusearch_button_id);
-			
-			
 			btnMenu.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					//Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
@@ -158,43 +128,31 @@ public class ViewDetailFragment extends Activity {
 	        
 	    
 			 ImageView imgExpandContract = (ImageView)findViewById(R.id.toggleImage);
-			 imgExpandContract.setBackgroundResource(R.drawable.ic_maximized);
+			 imgExpandContract.setFocusable(true);
+			imgExpandContract.setBackgroundResource(R.drawable.arrowhead_up);
 			   		
 			 imgExpandContract.setOnClickListener(new OnClickListener() {
 		   		  @Override
 				  public void onClick(View cv)
 		     	  {
-		   			
 		   			  LinearLayout contactLayout = (LinearLayout)findViewById(R.id.frameFilters);
 		   			  if(contactLayout.getVisibility() == View.VISIBLE)
 		   			  {
 		   				  contactLayout.setVisibility(View.GONE);
-		   				cv.setBackgroundResource(R.drawable.ic_minimized);
-		   		   		
-		   			
-		   			  }
+		   				cv.setBackgroundResource(R.drawable.arrowhead_down);
+		   		   	 }
 		   			  else
+		   				 if(contactLayout.getVisibility() == View.GONE)
 		   			  {
 		   				contactLayout.setVisibility(View.VISIBLE);
-		   				cv.setBackgroundResource(R.drawable.ic_maximized);
+		   				cv.setBackgroundResource(R.drawable.arrowhead_up);
 		   			  }
 		   				
 				  }
 			  });    
-	   
-
-	       
-	    
-	        
-	      
-	        //expandableListView.setFadingEdgeLength(3);
-	        
-   
-	        ////////////////
-
-	        
+	  
 	        searchButton = (Button)findViewById(R.id.search_btn_id);
-		   searchButton.setOnClickListener(
+	        searchButton.setOnClickListener(
 			        new Button.OnClickListener() {
 			        	public void onClick(View v) {
 			        	
@@ -202,62 +160,71 @@ public class ViewDetailFragment extends Activity {
 			        		}
 			        	}
 			        );
-			        
-		  
+			   
 			listView = (ListView)findViewById(R.id.listView1);
-			
-			
 			searchEditText = (EditText)findViewById(R.id.editText1);
-			try{
-			
-			
-			listItems = new ArrayList<TodoItem>();
-			customArrayAdapter = new CustomArrayAdapter(getApplicationContext(),listItems);
-			listView.setAdapter(customArrayAdapter);
-			
-			
-		listView.setOnItemClickListener(new ListView.OnItemClickListener()
-					{
-				@Override
-				public void onItemClick(AdapterView l, View v, int position, long id) {
-					TodoItem item = (TodoItem) customArrayAdapter.getItem(position);
-				    Intent intent = new Intent(getBaseContext(), AddDetailsActivity.class);
-				    ITEM_TO_EDIT = item;
-				    startActivity(intent);
-				  }
-					} );
+			try
+			{
+				listItems = new ArrayList<TodoItem>();
+				customArrayAdapter = new CustomArrayAdapter(this,listItems);
+				listView.setAdapter(customArrayAdapter);
+				listView.setOnItemClickListener(new ListView.OnItemClickListener()
+				{
+					@Override
+					public void onItemClick(AdapterView l, View v, int position, long id) {
+						TodoItem item = (TodoItem) customArrayAdapter.getItem(position);
+					    Intent intent = new Intent(getBaseContext(), AddDetailsActivity.class);
+					    ITEM_TO_EDIT = item;
+					    startActivity(intent);
+					  }
+				} );
 			}catch( Exception ee){
-				ShowMessage("ListView", "Exception:"+ee);
+				ShowMessage("ListView", "Exception:"+ee , getResources().getDrawable(R.drawable.cancel));
 			}
-			
-			
 			refreshItemsFromTable();
-			
-
 	}
-	
-	
-	
 	
 	public void SearchClicked()
 	{
 		PopulateSearchedDetails populateSearchedDetails = new PopulateSearchedDetails();
-		populateSearchedDetails.execute();
-
-		
-		
+		populateSearchedDetails.execute();	
 	}
+	
+	public void createProgress()
+	{
+		String Processing = getResources().getString(R.string.Processing);
+		String pleaseWait = getResources().getString(R.string.PleaseWait);
+		pd = new ProgressDialog(this);
+		pd.setTitle(Processing);
+		pd.setMessage(pleaseWait);
+		pd.setCancelable(false);
+		pd.setIndeterminate(true);
+		pd.show();
+	}
+	public void dismissProgress()
+	{
+		
+		if (pd!=null) {
+			pd.dismiss();
+			
+		}
+	}
+	
+	
 	
 	  private class PopulateSearchedDetails extends AsyncTask<Void, Void, Void> 
 	    {
 	    	 ArrayList<TodoItem> arrayItem = new ArrayList<TodoItem>();
-	            String url_add_beneficiary, name, notifyNum , hw_number;
+	         String url_get_beneficiary, name, notifyNum , hw_number, jsonStr;
 	    	// ProgressDialog pDialog= new ProgressDialog(context);
 	    	@Override
 	        protected void onPreExecute() {
 	            super.onPreExecute();
-	            
-	          //  createProgress();
+	            createProgress();
+	            name = new String();
+	            notifyNum = new String();
+	            hw_number = new String();
+	            jsonStr = new String("");
 	    
 	    	}
 		
@@ -267,59 +234,62 @@ public class ViewDetailFragment extends Activity {
 	            // Creating service handler class instance
 	            ServiceHandler sh = new ServiceHandler();
 	          
-	            // Making a request to url and getting response
-	        
-	            
-	            url_add_beneficiary = getString(R.string.url_add_beneficiary);
+	            url_get_beneficiary = getString(R.string.url_get_beneficiary);
 	        	
 		    	EditText etName = (EditText)findViewById(R.id.txtSearchName_id);
 		    	
 		    	
 	            name = (etName).getText().toString();
-	            notifyNum = ((EditText)findViewById(R.id.txtSearchPhone_id)).getText().toString();
+	            
+	            EditText   etnotifyNum = (EditText)findViewById(R.id.txtSearchPhone_id);
 	      
+	            notifyNum = (etnotifyNum).getText().toString();
 	            hw_number= "false";
 	            
 	            hw_number = ViewDetailFragment.getDefaults("mobileNo" , getApplicationContext());
 	            
 	        
-	            
-	           
-	            
-	            if(name.length() <= 0 && notifyNum.length() >= 0 )
+	            if(name.length() <= 0 && notifyNum.length() > 0 )
 	    		{
 
-		            url_add_beneficiary = url_add_beneficiary+"?notif_num="+notifyNum;
+	            	Log.d("notifffff: len", "> " + notifyNum.length());
+	    		      
+		            url_get_beneficiary = url_get_beneficiary+"?notif_num="+notifyNum+"&hw_num="+hw_number;
 	    		}
 	    		else
-	    		if(notifyNum.length() <= 0 && name.length() >= 0)
+	    		if(notifyNum.length() <= 0 && name.length() > 0)
 	    		{
 
-		            url_add_beneficiary = url_add_beneficiary+"?name="+name;
+	    			url_get_beneficiary = url_get_beneficiary+"?name="+name+"&hw_num="+hw_number;
 	    			
 	    		}
 	    		else
-	    			if(notifyNum.length() >= 0 && name.length() >= 0)
+	    			if(notifyNum.length() > 0 && name.length() > 0)
 	    			{
 
-	    	            url_add_beneficiary = url_add_beneficiary+"?name="+name+"&notif_num="+notifyNum;
+	    				  Log.d("no null: ", "> " + url_get_beneficiary);
+	    			      
+	    				  url_get_beneficiary = url_get_beneficiary+"?name="+name+"&notif_num="+notifyNum+"&hw_num="+hw_number;
 	    			}
 	    			else
 	    			{
-	    				
+	    				url_get_beneficiary = url_get_beneficiary +"?hw_num="+hw_number;
+	    				  Log.d("null: ", "> " + url_get_beneficiary);
+	    			      
 	    			}
-	            url_add_beneficiary = url_add_beneficiary +"&hw_num="+hw_number;
 	            
-	            Log.d("url_add_beneficiary: ", "> " + url_add_beneficiary);
+	            
+	            Log.d("url_get_beneficiary: ", "> " + url_get_beneficiary);
+	            Log.d("jsonStr: b4 ", "> " + jsonStr);
 		           
-	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
+	              jsonStr = sh.makeServiceCall(url_get_beneficiary, ServiceHandler.GET, null) ;
 	            
 	            Log.d("Response: ", "> " + jsonStr);
-	           
-	           
-	            		
-	            if (jsonStr != null) {
-	                try {
+	           	
+	            if (jsonStr != null) 
+	            {
+	                try 
+	                {
 	                	JSONArray jArray = new JSONArray(jsonStr);
 	                     
 	                	  Log.d("jArray: ", "> " + jArray.toString());
@@ -329,30 +299,7 @@ public class ViewDetailFragment extends Activity {
 	                	{
 	                		JSONObject c = jArray.getJSONObject(i);
 	                		 TodoItem item = new TodoItem();
-	                   
-	                		 /*
-	                		  * name
-								notif_num
-								dob
-								sex
-								gaurdian_name
-								language
-								hw_num
-								
-								{
-  "notify_number": "9390681183",
-  "health_worker_phone": "9390681183",
-  "sex": "M",
-  "gaurdian_name": "mahesh",
-  "lang": "HIN",
-  "reg_code": 7799,
-  "ModifiedOn": "2014-08-19T17:04:21Z",
-  "name": "suresh",
-  "dob": "2014-08-15",
-  "is_verified": false,
-  "Id": "p8otBedSSMOdKAPoaO1JiQ"
-}
-	                		  */
+	                  
 	                		 String name = c.getString("name");
 	                		 String dob = c.getString("dob");    
 	                		 String notify_number = c.getString("notify_number");
@@ -377,13 +324,11 @@ public class ViewDetailFragment extends Activity {
 	                		 item.setIs_verified(is_verified);
 	                		 item.setId(Id);
 	                		 
-	                		 
-	                		 
-	                		 
+	                		
 	                        arrayItem.add(item);
 	                        Log.d("itemgetText: ", "> " + item.getText());
-	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
-	                    //    customArrayAdapter.add(item);
+	                        Log.d("arrayItem: ", "> " + arrayItem);
+	                  
 	                	}
 	                } catch (JSONException e) {
 	                    e.printStackTrace();
@@ -400,31 +345,38 @@ public class ViewDetailFragment extends Activity {
 		    protected void onPostExecute(Void result) {
 		    
 		    	super.onPostExecute(result);
-		    	 Log.d("arrayItem: ", "> " + arrayItem);
-		    	 Iterator<TodoItem> itr =  arrayItem.iterator();
-		    	 
-		    	int er =0;
+		    	 Log.d("post execute jsonStr: ", "> " + jsonStr);
+                 
+                
 		    	customArrayAdapter.clear();
-		    	while(itr.hasNext())
-		    	{
-		    	// Log.d("arrayItem: ", "> " +);
-		    	// er++;
-		    		customArrayAdapter.add(itr.next());
-		    	}
 		    	
-		    	customArrayAdapter.notifyDataSetChanged();	  
-		    	
+		    		if(jsonStr == null)
+		    		{
+		    			dismissProgress();
+			    		ShowMessage( getString(R.string.Information), getString(R.string.NoNetwork), getResources().getDrawable(R.drawable.info) );
+			    		
+		    		}
+		    		else
+		    			if(jsonStr.length() == 2)
+				    	{
+				    		dismissProgress();
+				    		ShowMessage( getString(R.string.Information), getString(R.string.NoSearchResult), getResources().getDrawable(R.drawable.info) );
+				    		
+				    	}
+		    			else
+		    			{
+		    				Iterator<TodoItem> itr =  arrayItem.iterator();
 		    	 
-		    	//
-		    	//customArrayAdapter.notifyDataSetChanged();	  
-		    	/*
-		    	EditText etName = (EditText)getActivity().findViewById(R.id.enter_name_text);
-		    	etName.setText(user.get("name"));
+					    	
+					    	while(itr.hasNext())
+					    	{
+					    		customArrayAdapter.add(itr.next());
+					    	}
+					    	
+					    	customArrayAdapter.notifyDataSetChanged();	  
+					    	dismissProgress();
 		    	
-		    	EditText etDate = (EditText)getActivity().findViewById(R.id.date_of_birth);
-		    	etDate.setText(user.get("dob"));
-		    	//dismissProgress();
-		    	*/
+		    			}
 		    }    
 	    }
 
@@ -436,36 +388,16 @@ public class ViewDetailFragment extends Activity {
 	  
 	private void refreshItemsFromTable() {
 
-		// Get the items that weren't marked as completed and add them in the
-		// adapter
-		/*
-		 *
-		 * mToDoTable.where().field("complete").eq(val(false)).execute(new TableQueryCallback<TodoItem>() {
-		 
 
-			public void onCompleted(List<TodoItem> result, int count, Exception exception, ServiceFilterResponse response) {
-				if (exception == null) {
-					customArrayAdapter.clear();
-
-					for (TodoItem item : result) {
-						customArrayAdapter.add(item);
-					}
-
-				} else {
-					ShowMessage("exception", exception.toString());
-				}
-			}
-		});
-		*/
 	}
 
 	
 	
 	public void ShowMessage(String title,
-			String message)
+			String message, Drawable drawable)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+		builder.setIcon(drawable);
 		builder.setMessage(message);
 		builder.setTitle(title);
 		builder.create().show();

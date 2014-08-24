@@ -18,11 +18,27 @@
  
     	
     </style>
-<color name="redlist_color">#F25F5F</color>
-     <color name="light_red_color">#F8B0C0</color>
-     <color name="dark_red_color">#F30A35</color>
+<color name="redlist_color">#FA082D</color>
+     <color name="light_red_color">#FA082D</color>
+     <color name="dark_red_color">#E91010</color>
 	 <color name="light_green_color">#B2F7B1</color>
 	 <color name="dark_green_color">#0A6F11</color>
 	 <color name="white_color">#FFFFFF</color>
 	 <color name="light_blue_color">#3FB4EB</color>
+	<color name="medium_green_color">#06F86B</color> 
+	  <color name="dark_greyblue_color">#0A6789</color>
+	 <color name="grey_color">#818E92</color>
+	  <color name="dark_grey_color">#464849</color>
+	  
+	   <color name="light_grey_color">#ACB2B5</color>
+	 <color name="bright_blue_color">#04BAFC</color>
+	 <color name="sky_blue_color">#76CBFC</color>
+	<color name="search_blue_color">#74CBE9</color> 
+	<color name="yellow_color">#FFD200</color> 
+	<color name="brown_color">#713D02</color> 
+	<color name="mehndi_color">#8D9204</color> 
+	<color name="parrot_color">#EDF505</color> 
+	<color name="light_musturd_color">#F8D898</color> 	
+	
+	
 </resources>

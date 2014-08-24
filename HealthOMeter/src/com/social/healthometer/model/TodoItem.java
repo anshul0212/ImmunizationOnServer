@@ -141,7 +141,7 @@ public class TodoItem {
 	 * @param text
 	 *            text to set
 	 */
-	public final void setText(String text) {
+	public void setText(String text) {
 		mText = text;
 	}
 	
@@ -149,11 +149,11 @@ public class TodoItem {
 		return mSex;
 	}
 	
-	public final void setSex(String sex) {
+	public  void setSex(String sex) {
 		mSex = sex;
 	}
 	
-	public final void setNotifyNumber(String number) {
+	public  void setNotifyNumber(String number) {
 		mNotifyNumber = number;
 	}
 	
@@ -163,7 +163,7 @@ public class TodoItem {
 	
 	
 	
-	public final void setMobileNumber(String number) {
+	public  void setMobileNumber(String number) {
 		mNotifyNumber = number;
 	}
 	
@@ -171,7 +171,7 @@ public class TodoItem {
 		return mNotifyNumber;
 	}
 	
-	public final void setDateOfBirth(String dob) {
+	public  void setDateOfBirth(String dob) {
 		mDOB = dob;
 	}
 	
@@ -192,7 +192,7 @@ public class TodoItem {
 	 * @param id
 	 *            id to set
 	 */
-	public final void setId(String id) {
+	public  void setId(String id) {
 		mId = id;
 	}
 

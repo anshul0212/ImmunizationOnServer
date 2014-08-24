@@ -49,9 +49,9 @@
      
      <ImageView
         android:id="@+id/choose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/briefcase"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/lock_open"
         android:gravity="center"
       />
      
@@ -70,14 +70,14 @@
     android:gravity="center" >
     <EditText
         android:id="@+id/tv_mobileNoID"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
  		android:maxLength="10"
-        android:hint="Enter Mobile No."
+        android:hint="Mobile No."
         android:textStyle="normal"
         android:typeface="sans"
-        android:textSize="25sp"
-
+        android:textSize="30sp"
+		android:inputType="phone" 
         android:layout_gravity="center"/>
     
 </LinearLayout>
@@ -94,15 +94,16 @@
     android:gravity="center" >
      <EditText
         android:id="@+id/td_passkeyId"
-        android:layout_width="wrap_content"
+        android:layout_width="150dp"
         android:layout_height="55dp"
  		android:maxLength="4"
-        android:hint="Enter Passkey"
+        android:hint="Passkey"
         android:textStyle="normal"
         android:typeface="sans"
-        android:textSize="25sp"
-
+        android:textSize="30sp"
+		android:inputType="numberPassword" 
         android:layout_gravity="center" />
+     
      
      </LinearLayout>
      </TableRow>

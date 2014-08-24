@@ -53,6 +53,27 @@
      	     <string name="Cannotbeadded">जोड़ा नहीं जा सकता!</string>
      	          <string name="NoNetwork">कोई नेटवर्क उपलब्ध नहीं!</string>
      	      <string name="AddedSuccess">सफलतापूर्वक जोड़!</string>
+     	        <string name="DeletedSuccess">सफलतापूर्वक नष्ट कर दिया!</string>
+     	       <string name="UpdatedSuccess">सफलतापूर्वक बदला!</string>
+     	       <string name="VerifiedSuccess">सफलतापूर्वक सत्यापित!</string>
+     	   	   	  <string name="NoSearchResult">कोई रिकॉर्ड मौजूद नहीं है !</string>
+     	   	   	   <string name="FillMandatory">विवरण दर्ज करें !</string>
+  
+     	   	       <string name="Records">रिकॉर्ड</string>
+     	   	       <string name="ConfirmationAdd">आप रिकॉर्ड जोड़ने के लिए निश्चित हैं ?</string>
+     	   	      <string name="ConfirmationUpdate">आप रिकॉर्ड को अपडेट करने के लिए निश्चित हैं ?</string>
+     	   	      <string name="ConfirmationVerifiy">आप रिकॉर्ड को सत्यापित करने के लिए निश्चित हैं ?</string>
+     	   	       <string name="ConfirmationDelete">आप रिकॉर्ड को नष्ट करने के लिए निश्चित हैं  ?</string>
+     	   	           <string name="BenificiaryDonotExist">रिकॉर्ड मौजूद नहीं ह</string>
+     	   	 
+     	   	           <string name="Ok">ठीक</string>
+     	   	       
+     	   	       <string name="Yes">हाँ</string>
+     	   	       <string name="No">नहीं</string>
+     	   	   	    <string name="url_add_beneficiary">http://promdhost.in/vaccination/beneficiary/</string>
+<string name="url_get_beneficiary">http://promdhost.in/vaccination/beneficiary</string>
+   
+     	   	   	   
      	       <string name="FullDetail"> पूरा विवरण प्रदान करें!</string>
      	        <string name="Warning">चेतावनी!</string>
 	     

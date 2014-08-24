@@ -21,8 +21,8 @@
           >
  <CheckBox 
         android:id="@+id/checkBox_id"
-        android:layout_marginLeft="3dp"
-          android:layout_marginRight="3dp"
+        android:layout_marginLeft="5dp"
+          android:layout_marginRight="5dp"
         android:layout_width="35dp"
         android:layout_gravity="center"
         android:layout_height="wrap_content"
@@ -56,7 +56,8 @@
          android:layout_toRightOf="@+id/profile_pic_id"
          android:paddingBottom="3dp"
          android:text="txt"
-         android:textSize="20sp" />
+         android:textSize="22sp" 
+         android:textStyle="bold"/>
 
      <TextView
          android:id="@+id/gender_id"
@@ -74,9 +75,9 @@
          android:layout_alignBaseline="@+id/name_id"
          android:layout_alignBottom="@+id/name_id"
          android:layout_alignParentRight="true"
-  android:layout_marginRight="7dip"
+  android:layout_marginRight="27dip"
            android:text="mob"
-         android:textSize="16sp" />
+         android:textSize="18sp" />
 
      <ImageView
          android:id="@+id/see_detail1"
@@ -91,13 +92,31 @@
 
      <EditText
          android:id="@+id/verificiation_code_id"
-         android:layout_width="120dp"
-         android:layout_height="28dp"
+         android:layout_width="60dp"
+         android:layout_height="35dp"
          android:layout_below="@+id/mob_id"
          android:layout_marginBottom="4dip"
          android:layout_toLeftOf="@+id/see_detail1"
          android:background="@drawable/edittext_selector"
          android:ems="10"
+         android:maxLength="4"
+         android:hint="@string/OTP"
+         android:inputType="number"
+         android:paddingLeft="4dip"
+         android:textColor="@color/grey_color"
+         android:textColorHint="@color/dark_green_color"
+         android:textSize="18sp" />
+     <TextView
+         android:id="@+id/verify_code_idTextView"
+         android:visibility="gone"
+         android:layout_width="60dp"
+         android:layout_height="35dp"
+         android:layout_below="@+id/mob_id"
+         android:layout_marginBottom="4dip"
+         android:layout_toLeftOf="@+id/see_detail1"
+         android:background="@drawable/edittext_selector"
+         android:ems="10"
+         android:maxLength="4"
          android:hint="@string/OTP"
          android:inputType="number"
          android:paddingLeft="4dip"

@@ -89,22 +89,9 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	    
 	    final int a = position;
 	    
-	    code.setText(items.get(a).getNotifyNumber());
+	  // code.setText(items.get(a).getNotifyNumber());
 	    
-	  /*  code.setOnFocusChangeListener(new OnFocusChangeListener() {          
-
-	        public void onFocusChange(View v, boolean hasFocus) {
-	            if(!hasFocus)
-	            {
-	            	   
-	               //do job here when EditText loses focus
-	            }
-	            else
-	            	  items.get(a).setNotifyNumber( ((EditText)v.findViewById(R.id.verificiation_code_id)).getText().toString());
-			    
-	        }
-	    });
-	*/  
+	 
 	    
 	    code.setOnKeyListener( new OnKeyListener() {
  	
@@ -113,7 +100,7 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 				// TODO Auto-generated method stub
 				if( keyCode != KeyEvent.KEYCODE_BACK )
 			      { 
-				   items.get(a).setNotifyNumber( ((EditText)arg0.findViewById(R.id.verificiation_code_id)).getText().toString());
+				   items.get(a).setReg_code( ((EditText)arg0.findViewById(R.id.verificiation_code_id)).getText().toString());
 				   Log.d("Key", "no back");
 				// super.onKey( keyCode, event );
 				return false;
@@ -144,10 +131,16 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	   }
 	
 	   EditText otp= (EditText)rowView.findViewById(R.id.verificiation_code_id);
+	   TextView otpReadOnly= (TextView)rowView.findViewById(R.id.verify_code_idTextView);
+		  
 	   if(parent.getId() == R.id.listView1) 
 	   {
-		  
+		  // otpReadOnly.setText(otp.getText().toString());
 		   otp.setVisibility(View.GONE);
+		  // otpReadOnly.setVisibility(View.VISIBLE);
+			  
+		 //  otp.setEnabled(false);
+		  // otp.setBackgroundColor(color.darker_gray);
 	   } 
 	   //ck.setFocusable(true);
 	   ck.setClickable(true);
@@ -177,11 +170,15 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	
 	 
 	    nameTextView.setText(items.get(position).getText());
-	   
+	    
+	    Log.d("items.get(position).getSex()=", items.get(position).getText());
+	  
 	    genderText.setText(items.get(position).getSex());
+	  // else
+		///   genderText.setText("Female");
 	    // mob_num.setText(items.get(position).getMobileNumber());
-	     mob_num.setText(items.get(position).getReg_code());
-	    code.setText(items.get(position).getNotifyNumber());
+	     mob_num.setText(items.get(position).getNotifyNumber());
+	    code.setText(items.get(position).getReg_code());
 	  
 	
 	    nameTextView.setTextColor(Color.BLACK);

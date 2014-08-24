@@ -15,6 +15,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
+
+import android.util.Log;
  
 public class ServiceHandler {
  
@@ -44,6 +46,9 @@ public class ServiceHandler {
     public String makeServiceCall(String url, int method,List<NameValuePair> params) {
         try {
             // http client
+        	 
+        	  response = null;
+        	  Log.d("responseb4 =", ""+response);
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpEntity httpEntity = null;
             HttpResponse httpResponse = null;
@@ -76,8 +81,10 @@ public class ServiceHandler {
  
             }
             httpEntity = httpResponse.getEntity();
+         
             response = EntityUtils.toString(httpEntity);
- 
+            Log.d("response aftr=", response);
+            
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {
