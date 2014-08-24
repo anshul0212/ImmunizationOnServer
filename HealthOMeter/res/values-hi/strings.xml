@@ -2,6 +2,9 @@
 <resources>
 
     <string name="app_name">ई-आरोग्यम</string>
+       <string name="passkeyDetail">प्रवेश जानकारी</string>
+          <string name="okLogin">ठीक</string> 
+    <string name="app_nameHindi">ई-आरोग्यम</string>
     <string name="action_settings">सेटिंग्स</string>
     <string name="hello_world">दुनिया नमस्कार!</string>
     <string name="appName">स्वास्थ्य मीटर</string>
@@ -58,7 +61,7 @@
      	       <string name="VerifiedSuccess">सफलतापूर्वक सत्यापित!</string>
      	   	   	  <string name="NoSearchResult">कोई रिकॉर्ड मौजूद नहीं है !</string>
      	   	   	   <string name="FillMandatory">विवरण दर्ज करें !</string>
-  
+      
      	   	       <string name="Records">रिकॉर्ड</string>
      	   	       <string name="ConfirmationAdd">आप रिकॉर्ड जोड़ने के लिए निश्चित हैं ?</string>
      	   	      <string name="ConfirmationUpdate">आप रिकॉर्ड को अपडेट करने के लिए निश्चित हैं ?</string>
@@ -86,7 +89,10 @@
      	   	       <string name="wrongPasskey">पासकी दर्ज किया गलत है. पुन: प्रयास करें.</string>
      	   	      <string name="mobileNoUpdated">मोबाइल नं सफलतापूर्वक बदला</string>
      	   	      
-     	   	      
+     	   	    <string name="InformationHindi">सूचना !</string>
+     	   	    
+     	   	     <string name="wrongPasskeyHindi">पासकी दर्ज किया गलत है. पुन: प्रयास करें.</string>
+     	   	    
 	    <string-array name="languages">
 	        
         <item>चयन</item>

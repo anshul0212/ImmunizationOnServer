@@ -9,6 +9,9 @@
 	</string-array>
 	
     <string name="app_name">e-Arogyam</string>
+   <string name="app_nameHindi">ई-आरोग्यम</string>
+   <string name="passkeyDetail">प्रवेश जानकारी</string>
+   <string name="okLogin">ठीक</string> 
     <string name="main_menu">Main Menu</string>
     <string name="add_details">Add Details</string>
     <string name="verified_list">Verified List</string>
@@ -56,7 +59,11 @@
      	   	 
      	   	      <string name="NoNetwork">No Network Available!</string>
      	   	      <string name="Information">Information</string>
-     	   	       <string name="wrongPasskey">Passkey entered is wrong. Please try again.</string>
+     	   	    <string name="InformationHindi">सूचना !</string>
+     	   	    
+     	   	     <string name="wrongPasskeyHindi">पासकी दर्ज किया गलत है. पुन: प्रयास करें.</string>
+     	   	    
+     	   	      <string name="wrongPasskey">Passkey entered is wrong. Please try again.</string>
      	   	      <string name="mobileNoUpdated">Mobile No updated successfully</string>
      	   	      <string name="FillMandatory">Please enter all details!</string>
   

@@ -23,15 +23,7 @@ import android.content.SharedPreferences;
 
 public class PasskeyActivity extends Activity  {
 	
-	 /** An array of strings to populate dropdown list */
-    String[] actions = new String[] {
-        "Menu",
-        "Add Detail",
-        "Search",
-        "Verify",
-        "Setting"
-    };
-    
+
     private Locale activityLocale;
     private OnClickListener onClickListener;
     private  EditText passkey;
@@ -72,83 +64,46 @@ lang = "EN";
 lang = PasskeyActivity.getDefaults("lang" , getApplicationContext());
 isLangSet = PasskeyActivity.getDefaults("isLangSet" , getApplicationContext()); 		
 
-if(isLangSet.contentEquals("false")){
-Intent i = new Intent(PasskeyActivity.this,ChooseLanguageActivity.class);
-startActivity(i);
-}
-else
-if(isLangSet.contentEquals("true"))
+if(isLangSet.contentEquals("false"))
 {
-
-	activityLocale=getApplicationContext().getResources().getConfiguration().locale;
-	
-	if (lang.contentEquals("EN")) {
-  	
-  	
-  	  Localization.setLanguage(getApplicationContext(), "en",activityLocale); 
-  	 
-	}		
-		
-	if (lang.contentEquals("HIN")) {
-  	
-  	 Localization.setLanguage(getApplicationContext(), "hi",activityLocale); 
- 	  
-	}
-	Toast.makeText(getApplicationContext(), "lang Already Exists", 1000).show();
-	
-	Intent i = new Intent(PasskeyActivity.this,MainMenuActivity.class);
+	Intent i = new Intent(PasskeyActivity.this,ChooseLanguageActivity.class);
 	startActivity(i);
 }
+else
+	if(isLangSet.contentEquals("true"))
+	{
+	
+		activityLocale=getApplicationContext().getResources().getConfiguration().locale;
+		
+		if (lang.contentEquals("EN")) {
+	  	
+	  	
+	  	  Localization.setLanguage(getApplicationContext(), "en",activityLocale); 
+	  	 
+		}		
+			
+		if (lang.contentEquals("HIN")) {
+	  	
+	  	 Localization.setLanguage(getApplicationContext(), "hi",activityLocale); 
+	 	  
+		}
+			
+		Intent i = new Intent(PasskeyActivity.this,MainMenuActivity.class);
+		startActivity(i);
+	}
 
 }
 else
 {
-ShowMessage( getString(R.string.Information) , getString(R.string.wrongPasskey));
+ShowMessage( getString(R.string.InformationHindi) , getString(R.string.wrongPasskeyHindi));
 }
 }
 });
 
 /** Create an array adapter to populate dropdownlist */
-ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item, actions);
-
-/** Enabling dropdown list navigation for the action bar */
-getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 
 
-
-/** Defining Navigation listener */
-ActionBar.OnNavigationListener navigationListener = new OnNavigationListener() {
-
-    @Override
-    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-     
-
-			switch (itemPosition) {
-			case 0:
-						//Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
-						//Intent i = new Intent(getBaseContext(), AddDetailsActivity.class);
-						//startActivity(i);
-				
-			    break;
-			case 1:
-				Intent j = new Intent(getBaseContext(), AddDetailsActivity.class);
-				startActivity(j);
-			    break;
-			default:
-			    break;
-			}
-
-		
-			return true;
-		    }
-    
-      
-    
-};
-
-
-getActionBar().setListNavigationCallbacks(adapter, navigationListener);
 
 
 }
