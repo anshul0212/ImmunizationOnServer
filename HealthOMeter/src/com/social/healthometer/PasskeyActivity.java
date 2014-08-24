@@ -37,6 +37,7 @@ public class PasskeyActivity extends Activity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
        
+        new SimpleEula(this).show();
 setContentView(R.layout.activity_passkey);
 
 
