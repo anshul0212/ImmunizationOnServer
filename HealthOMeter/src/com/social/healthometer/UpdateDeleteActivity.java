@@ -4,11 +4,6 @@ import java.net.MalformedURLException;
 import java.sql.Date;
 import java.util.Calendar;
 
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.TableOperationCallback;
-import com.microsoft.windowsazure.mobileservices.TableDeleteCallback;
 import com.social.healthometer.model.TodoItem;
 
 import android.annotation.TargetApi;
@@ -34,8 +29,6 @@ public class UpdateDeleteActivity extends Activity {
 	EditText nameEditText;
 	EditText cellNoEditText;
 	DatePicker DOBDatePicker;
-	private MobileServiceTable<TodoItem> mToDoTable;
-	private MobileServiceClient mClient;
 	private Boolean ready;
 	
 	@Override
@@ -88,30 +81,7 @@ public class UpdateDeleteActivity extends Activity {
 			
 			////////////////////////////////////////////////
 			
-			try
-			{
-				mClient = new MobileServiceClient(
-						"http://vaccinepro.azure-mobile.net/",
-						"YDWYSvaxkSyIYOacjyfhWWYgWGxMtB83",
-						this);
-			mToDoTable = mClient.getTable(TodoItem.class);
-			if(mToDoTable != null)
-			{
-				ready = true;
-			//	this.ShowMessage("Success", "MobileServiceClient createdf successfully");
-			}
-			else
-			{
-				ready = false;
-				this.ShowMessage("Failed", "Cannot create MobileServiceClient");
-			}
-				
-			}
-			catch(MalformedURLException ex)
-			{
-				ready = false;
-				this.ShowMessage("Exception", "Cannot create MobileServiceClient");
-			}
+			
 					
 		}
 	}
@@ -199,24 +169,7 @@ public class UpdateDeleteActivity extends Activity {
 		
 		ViewDetailFragment.ITEM_TO_EDIT.setDateOfBirth(strBuilder.toString());
 		//ShowMessage("exception", ViewDetailFragment.ITEM_TO_EDIT.toString());  
-		mToDoTable.update(ViewDetailFragment.ITEM_TO_EDIT, new TableOperationCallback<TodoItem>() {
-		      public void onCompleted(TodoItem entity, Exception exception, ServiceFilterResponse response) {
-		    	    
-		            if (exception == null) 
-		            {
-		            	nameEditText.setText("");
-		        		cellNoEditText.setText("");
-		        		femaleRadioButton.setChecked(false);
-		        		maleRadioButton.setChecked(false);	
-		               	ShowMessage("Success", "Updated Successfully");          		
-		            } 
-		            else 
-		            {
-		            	ShowMessage("exception", exception.toString());  
-		            	//	ShowMessage("Failed", "Cannot be Updated");
-		            }
-		      }
-		      });
+		
 		
 	}
 	
@@ -229,20 +182,7 @@ public class UpdateDeleteActivity extends Activity {
 			return;
 		}
 		
-		mToDoTable.delete(ViewDetailFragment.ITEM_TO_EDIT.getId(), new TableDeleteCallback() {
-	        public void onCompleted(Exception exception, ServiceFilterResponse response) 
-	        {
-	        	if(exception == null)
-	        	{
-	        		ShowMessage("Successful", "Item deleted");
-	        		ViewDetailFragment.ITEM_TO_EDIT = null;
-	        	}
-	        	else
-	        	{
-	        		ShowMessage("Failed", "Deletion failed");
-	        	}
-	        }
-});
+		
 		// if Successful
 		//ViewDetailFragment.ITEM_TO_EDIT = null;
 		

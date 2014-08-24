@@ -1,28 +1,16 @@
 package com.social.healthometer;
 
-import static com.microsoft.windowsazure.mobileservices.MobileServiceQueryOperations.val;
 
-import java.net.MalformedURLException;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.social.healthometer.R.color;
 import com.social.healthometer.adapter.CustomArrayAdapter;
-import com.social.healthometer.adapter.ListItemAdapter;
+
 import com.social.healthometer.model.TodoItem;
-import com.social.healthometer.model.ListItems;
 import com.social.utilities.ServiceHandler;
-import com.microsoft.windowsazure.mobileservices.MobileServiceClient;
-import com.microsoft.windowsazure.mobileservices.MobileServiceTable;
-import com.microsoft.windowsazure.mobileservices.ServiceFilterResponse;
-import com.microsoft.windowsazure.mobileservices.TableQueryCallback;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -36,7 +24,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.util.SparseBooleanArray;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,8 +48,6 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	 ListView mylistview , checklistview;
 	 private ProgressDialog pd;
 	 private CustomArrayAdapter customArrayAdapter;
-	 private MobileServiceClient mClient;
-		private MobileServiceTable<TodoItem> mToDoTable;
 		Boolean ready;
 		
 	 
@@ -83,30 +69,7 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	//  rowCheckBoxItems = new ArrayList<CheckBoxItem>();  
 	  customArrayAdapter = new CustomArrayAdapter(getActivity().getApplicationContext(),listItems);
 	  mylistview.setAdapter(customArrayAdapter);
-	//  rowCheckBoxItems = new ArrayList<CheckBoxItem>();  
-	  
-	  /*
-	  member_names = getResources().getStringArray(R.array.Member_names);
 
-	  profile_pics = getResources().obtainTypedArray(R.array.profile_pics);
-
-	  code = getResources().getStringArray(R.array.code);
-
-	  mob_num = getResources().getStringArray(R.array.mob_num);
-	
-	  for (int i = 0; i < member_names.length; i++) {
-		  
-	   ListItems item = new ListItems(true, member_names[i], profile_pics.getResourceId(i, -1), code[i], mob_num[i]);
-	   //CheckBoxItem checkItem = new CheckBoxItem(true);
-	//   rowCheckBoxItems.add(checkItem);
-	   listItems.add(item);
-	  }
-
-	  mylistview = (ListView) view.findViewById(R.id.list);
-	  ListItemAdapter adapter = new ListItemAdapter(this.getActivity(), listItems);
-	  mylistview.setAdapter(adapter);
-	  profile_pics.recycle();
-*/
 	  
 	  mylistview.setOnItemClickListener(this);
 	 
@@ -140,12 +103,7 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	  fragmentTransaction.addToBackStack(member_name);
 	  fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
 	  fragmentTransaction.commit();
-	 // ListView checklistview1 = (ListView) view.findViewById(R.id.listCheckbox);
-	  //checklistview1.setVisibility(View.VISIBLE);
-	//  CheckBox checkObj = (CheckBox) view.findViewById(R.id.checkBoxId);
-	  //  checkObj.setVisibility(View.GONE);
-	  //rowCheckBoxItems.get(position).g
-	   
+	
 	  
 	 }
 
@@ -203,10 +161,6 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	            if (jsonStr != null) {
 	                try {
 	                	JSONArray jArray = new JSONArray(jsonStr);
-	                     
-	                	  Log.d("jArray: ", "> " + jArray.toString());
-	                      
-	                	  Log.d("jArray.length(): ", "> " + jArray.length());
 	                	for(int i=0; i<jArray.length() ; i++)
 	                	{
 	                		JSONObject c = jArray.getJSONObject(i);
@@ -237,16 +191,13 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	                		 item.setIs_verified(is_verified);
 	                		 item.setId(Id);
 	                        arrayItem.add(item);
-	                        Log.d("itemgetText: ", "> " + item.getText());
-	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
-	                    //    customArrayAdapter.add(item);
+	                  //    customArrayAdapter.add(item);
 	                	}
 	                } catch (JSONException e) {
 	                    e.printStackTrace();
 	                }  
 	            } else {
-	                Log.e("ServiceHandler", "Couldn't get any data from the url");
-	            }
+	           }
 	            
 	            
 	            return null;    
@@ -256,8 +207,7 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 		    protected void onPostExecute(Void result) {
 		    
 		    	super.onPostExecute(result);
-		    	 Log.d("arrayItem: ", "> " + arrayItem);
-		    	 Iterator<TodoItem> itr =  arrayItem.iterator();
+		    		 Iterator<TodoItem> itr =  arrayItem.iterator();
 		    	 
 		    	int er =0;
 		    	while(itr.hasNext())
@@ -280,25 +230,7 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 
 		 PopulateVerifiedDetails populateVerifiedDetails= new PopulateVerifiedDetails();
 		 populateVerifiedDetails.execute();
-		 
-		 /*
-			mToDoTable.where().field("complete").eq(val(true)).execute(new TableQueryCallback<TodoItem>() {
-				
-				public void onCompleted(List<TodoItem> result, int count, Exception exception, ServiceFilterResponse response) {
-					 
-					if (exception == null) {
-						customArrayAdapter.clear();
-			
-						for (TodoItem item : result) {
-							customArrayAdapter.add(item);
-						}
-
-					} else {
-						ShowMessage("exception", exception.toString());
-					}
-				}
-			});
-			*/
+		
 		}
 
 	 
