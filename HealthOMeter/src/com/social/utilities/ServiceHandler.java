@@ -48,8 +48,7 @@ public class ServiceHandler {
             // http client
         	 
         	  response = null;
-        	  Log.d("responseb4 =", ""+response);
-            DefaultHttpClient httpClient = new DefaultHttpClient();
+        	     DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpEntity httpEntity = null;
             HttpResponse httpResponse = null;
              
@@ -83,8 +82,7 @@ public class ServiceHandler {
             httpEntity = httpResponse.getEntity();
          
             response = EntityUtils.toString(httpEntity);
-            Log.d("response aftr=", response);
-            
+         
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (ClientProtocolException e) {

@@ -23,7 +23,6 @@ import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,12 +148,10 @@ public class VerifiedListFragment extends Fragment implements OnItemClickListene
 	            
 	            hw_number = ViewDetailFragment.getDefaults("mobileNo" , getActivity());
 	            
-	            // Making a request to url and getting response
-	            Log.d("url_add_beneficiary",url_add_beneficiary);
 	            url_add_beneficiary = url_add_beneficiary+"?is_verified=1";
 	            String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
-	            Log.d("Response: ", "> " + jsonStr);
+	            //Log.d("Response: ", "> " + jsonStr);
 	           
 	           
 	            		

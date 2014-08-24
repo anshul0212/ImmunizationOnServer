@@ -26,7 +26,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,15 +34,11 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
-import android.widget.EditText;
+
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
+
 import android.widget.ListView;
-import android.widget.Toast;
+
 //import android.widget.AdapterView.OnItemClickListener;
 
 public class PendingListFragment extends Fragment implements OnItemClickListener  
@@ -227,7 +222,6 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
                        
                        nameValuePair.add(new BasicNameValuePair("is_verified", "1"));
                      
-                       Log.d("url_add_beneficiary2",url_add_beneficiary);
                        ServiceHandler sh = new ServiceHandler();
                        
                     String  jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST , nameValuePair) ;
@@ -239,7 +233,7 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
                     	break;
                     }
                     count++;
-                    Log.d("Response: ", "> " + jsonStr);
+                   // Log.d("Response: ", "> " + jsonStr);
                    
                     
                     
@@ -324,31 +318,20 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	            hw_number= "false";
 	            
 	            hw_number = ViewDetailFragment.getDefaults("mobileNo" , getActivity());
-	            
-	        
-	   		 
+	           
 	            url_add_beneficiary = url_add_beneficiary+"?is_verified=0"+"&hw_num="+hw_number;
-	            Log.d("url_add_beneficiary",url_add_beneficiary);
-	        	
-	              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
+	            jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.GET) ;
 	            
-	            Log.d("Response: ", "> " + jsonStr);
+	          //  Log.d("Response: ", "> " + jsonStr);
 	           
-	           
-	            		
+	          		
 	            if (jsonStr != null) {
 	                try {
 	                	JSONArray jArray = new JSONArray(jsonStr);
-	                     
-	                	  Log.d("jArray: ", "> " + jArray.toString());
-	                      
-	                	  Log.d("jArray.length(): ", "> " + jArray.length());
 	                	for(int i=0; i<jArray.length() ; i++)
 	                	{
 	                		JSONObject c = jArray.getJSONObject(i);
 	                		 TodoItem item = new TodoItem();
-	                   
-	                		
 	                		 String name = c.getString("name");
 	                		 String dob = c.getString("dob");    
 	                		 String notify_number = c.getString("notify_number");
@@ -372,18 +355,13 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 	                		 item.setModifiedOn(ModifiedOn);
 	                		 item.setIs_verified(is_verified);
 	                		 item.setId(Id);
-	                		 
-	                		 
+	                		
 	                        arrayItem.add(item);
-	                        Log.d("itemgetText: ", "> " + item.getText());
-	           	    	 Log.d("arrayItem: ", "> " + arrayItem);
-	                    //    customArrayAdapter.add(item);
-	                	}
+	                  }
 	                } catch (JSONException e) {
 	                    e.printStackTrace();
 	                }  
 	            } else {
-	                Log.e("ServiceHandler", "Couldn't get any data from the url");
 	            }
 	            
 	            
@@ -394,10 +372,7 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 		    protected void onPostExecute(Void result) {
 		    
 		    	super.onPostExecute(result);
-		    	
-		    	Log.d("jsonStr: ", "> " + jsonStr);
-		    	 Log.d("arrayItem: ", "> " + arrayItem);
-		    	 if(jsonStr != null)
+		    	if(jsonStr != null)
 		    	 {
 		    		 if(jsonStr.length() > 2)
 		    		 {
@@ -406,8 +381,6 @@ public class PendingListFragment extends Fragment implements OnItemClickListener
 		 		    	int er =0;
 		 		    	while(itr.hasNext())
 		 		    	{
-		 		    	// Log.d("arrayItem: ", "> " +);
-		 		    	// er++;
 		 		    		customArrayAdapter.add(itr.next());
 		 		    	}
 		 		    	dismissProgress();

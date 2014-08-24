@@ -78,10 +78,6 @@ public class UpdateDeleteActivity extends Activity {
 	    	else
 	    		cal.set(2007, 2,2);
 			DOBDatePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), null);
-			
-			////////////////////////////////////////////////
-			
-			
 					
 		}
 	}
@@ -107,13 +103,7 @@ public class UpdateDeleteActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
+		
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		}
@@ -164,29 +154,16 @@ public class UpdateDeleteActivity extends Activity {
 		strBuilder.append(DOBDatePicker.getDayOfMonth());
 
 		dob = Date.valueOf(strBuilder.toString());
-		
-		
-		
 		ViewDetailFragment.ITEM_TO_EDIT.setDateOfBirth(strBuilder.toString());
-		//ShowMessage("exception", ViewDetailFragment.ITEM_TO_EDIT.toString());  
-		
-		
+	
 	}
 	
 	public void DeleteClicked(View view)
 	{
-		
-		
 		if(ViewDetailFragment.ITEM_TO_EDIT == null)
 		{
 			return;
 		}
-		
-		
-		// if Successful
-		//ViewDetailFragment.ITEM_TO_EDIT = null;
-		
-		
 	}
 	
 	public void ShowMessage(String title, String message)

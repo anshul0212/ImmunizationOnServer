@@ -1,7 +1,5 @@
 package com.social.healthometer.adapter;
 
-
-
 import java.util.ArrayList;
 
 import com.social.healthometer.R;
@@ -10,16 +8,15 @@ import com.social.healthometer.model.SearchFilterItem;
 
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+
 import android.view.ViewGroup;
 import android.view.View.OnKeyListener;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
+
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -85,13 +82,11 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     	SearchFilterItem searchFilterItem = (SearchFilterItem) getChild(groupPosition, childPosition);
     	
         if (convertView == null) {
-        	Log.d("Nulllllllllllllllllllll", "no back");
-            LayoutInflater infalInflater = (LayoutInflater) context
+         LayoutInflater infalInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.searchfilter_item, null);
             
         }
-        Log.d("mmmmmmmmmmmmmmmmmm", "no back");
              tv = (EditText) convertView.findViewById(R.id.editText1);
             tv.setTag(childPosition);
             
@@ -106,51 +101,22 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
            		 tv.setHint("Enter Date of Birth");
         
         imageIcon.setImageResource(children.get(0).get(childPosition).getProfile_pic_id());
-       // searchFilterItem.setGroup("Search Options"); 
-        // Depending upon the child type, set the imageTextView01
-    //    tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        
+ 
         tv.setText(children.get(0).get(childPosition).getName());
         
             tv.setCompoundDrawablesWithIntrinsicBounds(R.drawable.dark_red_gradient, 0, 0, 0);
            // tv.setId(childPosition);
            final int c = childPosition;
-         //  final int g = groupPosition;
-      	  
-           /*  tv.setOnClickListener(new OnClickListener(){
-        	  
-        	   public void onClick(View arg0) {
-        		   Log.d("clivkkkkkkkkkkkkkkkkk", "no back");
-        			children.get(0).get(c).setName( ((EditText)arg0.findViewById(R.id.editText1)).getText().toString());
-    					
-   	            // Do something here.
-   	        }
-        	   
-           });
-           */
-          
-           
+       
             tv.setOnKeyListener( new OnKeyListener() {
             	 
             	  
     			@Override
     			public boolean onKey(View arg0, int keyCode, KeyEvent event) {
     				// TODO Auto-generated method stub
-    				Log.d("innnnnnnnnnnnnnnnnnnnnnnnnnnnn", "no back");
-    				//if( keyCode != KeyEvent.KEYCODE_BACK )
-    			    //{ 
-    					
+    			
     					children.get(0).get(c).setName( ((EditText)arg0.findViewById(R.id.editText1)).getText().toString());
-    					
-    				// super.onKey( keyCode, event );
-    				
-    			   // }
-    				//else
-    				//{
-    				//	((EditText)arg0.findViewById(R.id.verificiation_code_id)).setFocusable(false);
-    					Log.d("Backhhghg", "yes back");
-    					
-    			//	}
+    			
     				
     				return false;
     				
@@ -191,9 +157,8 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView,
             ViewGroup parent) {
         String group = (String) getGroup(groupPosition);
-        Log.d("gggggggggggggggggggg", "no back");
-        if (convertView == null) {
-        	  Log.d("reeeeeeeeeeeeeeeeeeee", "no back");
+             if (convertView == null) {
+        	
             LayoutInflater infalInflater = (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = infalInflater.inflate(R.layout.group_layout, null);

@@ -25,13 +25,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -199,7 +196,7 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     	  @Override
         protected void onPreExecute() {
             super.onPreExecute();
-           Log.d("in pre", "preee");
+          
             hw_number = new String("");
             
             jsonStr = new String();
@@ -295,16 +292,12 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 	    	}
 	    	else
 	    	{
-	    		 Log.d("dob","dob is null");
+	    	
 	    	}	
         	
             // Creating service handler class instance
             ServiceHandler sh = new ServiceHandler();
-            Log.d("dob",dob);
-            
-            // Making a request to url and getting response
-            Log.d("url_add_beneficiary",url_add_beneficiary);
-            
+          
             hw_number= "";
             
             hw_number = FragmentAddDetails.getDefaults("mobileNo" , context);
@@ -325,15 +318,11 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		            nameValuePair.add(new BasicNameValuePair("sex", sex));
 		      		
 		            nameValuePair.add(new BasicNameValuePair("hw_num", hw_number));
-		            
-		            Log.d("name", ""+name);
-					Log.d("notify_num", ""+notify_num);
-						Log.d("dob", ""+dob);
-						Log.d("hw_number", hw_number);
+		         
 		            
 		              jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.POST, nameValuePair) ;
 		            
-		            Log.d("Response: ", "> " + jsonStr);
+		 //           Log.d("Response: ", "> " + jsonStr);
 		 
 		            if (jsonStr != null) 
 		            {
@@ -348,9 +337,6 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
 		                        user.put("name", nameResponse);
 		                        user.put("dob", dobResponse);
 		                     
-		                       Log.d("user: ", "> " + user);
-		                       
-		                  
 		                } catch (JSONException e) {
 		                    e.printStackTrace();
 		                }  
@@ -561,9 +547,6 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     	
     		
 		if (item!=null) {
-			
-		Log.d("item not null" , item.toString());
-		
 			if(item.getText() != null)
 			{
 				nameEditText.setText(item.getText());
@@ -734,11 +717,9 @@ public class FragmentAddDetails extends Fragment implements OnDateSetListener,On
     			// Creating service handler class instance
     			ServiceHandler sh = new ServiceHandler();
            
-    			// Making a request to url and getting response
-    			Log.d("url_add_beneficiary",url_add_beneficiary);
                jsonStr = sh.makeServiceCall(url_add_beneficiary, ServiceHandler.DELETE) ;
             
-               Log.d("Response: ", "> " + jsonStr);
+               //Log.d("Response: ", "> " + jsonStr);
  
     		}
             return null;    

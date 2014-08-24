@@ -2,24 +2,19 @@ package com.social.healthometer.adapter;
 
 import java.util.ArrayList;
 
-import com.social.healthometer.AddDetailsActivity;
 import com.social.healthometer.R;
 import com.social.healthometer.model.TodoItem;
 
-import android.R.color;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.TypedArray;
+
 import android.graphics.Color;
-import android.text.Editable;
-//import android.text.method.KeyListener;
-import android.util.Log;
+
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
+
 import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -43,56 +38,18 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 
 	public View getView( int position, View convertView, ViewGroup parent) {
 	   
-	//	 if (convertView == null) {
-		LayoutInflater inflater = (LayoutInflater) context
+	LayoutInflater inflater = (LayoutInflater) context
 	        .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    View rowView = inflater.inflate(R.layout.list_pending_item, parent, false);
-	 
 
-	//	 }
-	    /*
-		  
-		  member_names = getResources().getStringArray(R.array.Member_names);
-
-		  profile_pics = getResources().obtainTypedArray(R.array.profile_pics);
-
-		  code = getResources().getStringArray(R.array.code);
-
-		  mob_num = getResources().getStringArray(R.array.mob_num);
-		
-		  for (int i = 0; i < member_names.length; i++) {
-			  
-		   ListItems item = new ListItems(true, member_names[i], profile_pics.getResourceId(i, -1), code[i], mob_num[i]);
-		   //CheckBoxItem checkItem = new CheckBoxItem(true);
-		//   rowCheckBoxItems.add(checkItem);
-		   listItems.add(item);
-		  }
-
-		  mylistview = (ListView) view.findViewById(R.id.list);
-		  
-		  ListItemAdapter adapter = new ListItemAdapter(this.getActivity(), listItems);
-		  
-		  mylistview.setAdapter(adapter);
-		  */
 	    TextView nameTextView = (TextView) rowView.findViewById(R.id.name_id);
-	    ImageView profile_pics = (ImageView) rowView.findViewById(R.id.profile_pic_id);
-	    ImageView see_details = (ImageView) rowView.findViewById(R.id.see_detail1);
-	    
+	 
 	    TextView mob_num = (TextView) rowView.findViewById(R.id.mob_id);
 	    
 	    TextView genderText = (TextView) rowView.findViewById(R.id.gender_id);
 	    
 	    EditText code = (EditText) rowView.findViewById(R.id.verificiation_code_id);
-	  
-	  
-	  
-	    
 	    final int a = position;
-	    
-	  // code.setText(items.get(a).getNotifyNumber());
-	    
-	 
-	    
 	    code.setOnKeyListener( new OnKeyListener() {
  	
 			@Override
@@ -101,14 +58,11 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 				if( keyCode != KeyEvent.KEYCODE_BACK )
 			      { 
 				   items.get(a).setReg_code( ((EditText)arg0.findViewById(R.id.verificiation_code_id)).getText().toString());
-				   Log.d("Key", "no back");
-				// super.onKey( keyCode, event );
+				  
 				return false;
 			    }
 				else
 				{
-				//	((EditText)arg0.findViewById(R.id.verificiation_code_id)).setFocusable(false);
-					Log.d("Back", "yes back");
 					return false;
 				}
 				
@@ -131,8 +85,7 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	   }
 	
 	   EditText otp= (EditText)rowView.findViewById(R.id.verificiation_code_id);
-	   TextView otpReadOnly= (TextView)rowView.findViewById(R.id.verify_code_idTextView);
-		  
+	  
 	   if(parent.getId() == R.id.listView1) 
 	   {
 		  // otpReadOnly.setText(otp.getText().toString());
@@ -170,14 +123,8 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	
 	 
 	    nameTextView.setText(items.get(position).getText());
-	    
-	    Log.d("items.get(position).getSex()=", items.get(position).getText());
-	  
 	    genderText.setText(items.get(position).getSex());
-	  // else
-		///   genderText.setText("Female");
-	    // mob_num.setText(items.get(position).getMobileNumber());
-	     mob_num.setText(items.get(position).getNotifyNumber());
+	    mob_num.setText(items.get(position).getNotifyNumber());
 	    code.setText(items.get(position).getReg_code());
 	  
 	
@@ -188,10 +135,7 @@ public class CustomArrayAdapter extends ArrayAdapter<TodoItem> {
 	  
 	   
 	     genderText.setTextColor(Color.BLACK);
-	   
-	    // Change the icon for Windows and iPhone
-	   //profile_pics.recycle();
-	    return rowView;
+	      return rowView;
 	}
 	
 }

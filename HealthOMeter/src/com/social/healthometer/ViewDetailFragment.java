@@ -20,7 +20,7 @@ import android.os.Bundle;
 
 import android.preference.PreferenceManager;
 
-import android.util.Log;
+
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -46,7 +46,7 @@ public class ViewDetailFragment extends Activity {
 	public static TodoItem ITEM_TO_EDIT = null;
 
 	private Button searchButton;
-	private EditText searchEditText;
+
 	private ListView listView;
 	
 	private ProgressDialog pd;
@@ -162,7 +162,6 @@ public class ViewDetailFragment extends Activity {
 			        );
 			   
 			listView = (ListView)findViewById(R.id.listView1);
-			searchEditText = (EditText)findViewById(R.id.editText1);
 			try
 			{
 				listItems = new ArrayList<TodoItem>();
@@ -251,10 +250,7 @@ public class ViewDetailFragment extends Activity {
 	        
 	            if(name.length() <= 0 && notifyNum.length() > 0 )
 	    		{
-
-	            	Log.d("notifffff: len", "> " + notifyNum.length());
-	    		      
-		            url_get_beneficiary = url_get_beneficiary+"?notif_num="+notifyNum+"&hw_num="+hw_number;
+	            	url_get_beneficiary = url_get_beneficiary+"?notif_num="+notifyNum+"&hw_num="+hw_number;
 	    		}
 	    		else
 	    		if(notifyNum.length() <= 0 && name.length() > 0)
@@ -266,35 +262,22 @@ public class ViewDetailFragment extends Activity {
 	    		else
 	    			if(notifyNum.length() > 0 && name.length() > 0)
 	    			{
-
-	    				  Log.d("no null: ", "> " + url_get_beneficiary);
-	    			      
-	    				  url_get_beneficiary = url_get_beneficiary+"?name="+name+"&notif_num="+notifyNum+"&hw_num="+hw_number;
+	    				url_get_beneficiary = url_get_beneficiary+"?name="+name+"&notif_num="+notifyNum+"&hw_num="+hw_number;
 	    			}
 	    			else
 	    			{
 	    				url_get_beneficiary = url_get_beneficiary +"?hw_num="+hw_number;
-	    				  Log.d("null: ", "> " + url_get_beneficiary);
-	    			      
+	    				 
 	    			}
+	             jsonStr = sh.makeServiceCall(url_get_beneficiary, ServiceHandler.GET, null) ;
 	            
-	            
-	            Log.d("url_get_beneficiary: ", "> " + url_get_beneficiary);
-	            Log.d("jsonStr: b4 ", "> " + jsonStr);
-		           
-	              jsonStr = sh.makeServiceCall(url_get_beneficiary, ServiceHandler.GET, null) ;
-	            
-	            Log.d("Response: ", "> " + jsonStr);
+	            //Log.d("Response: ", "> " + jsonStr);
 	           	
 	            if (jsonStr != null) 
 	            {
 	                try 
 	                {
 	                	JSONArray jArray = new JSONArray(jsonStr);
-	                     
-	                	  Log.d("jArray: ", "> " + jArray.toString());
-	                      
-	                	  Log.d("jArray.length(): ", "> " + jArray.length());
 	                	for(int i=0; i<jArray.length() ; i++)
 	                	{
 	                		JSONObject c = jArray.getJSONObject(i);
@@ -326,16 +309,13 @@ public class ViewDetailFragment extends Activity {
 	                		 
 	                		
 	                        arrayItem.add(item);
-	                        Log.d("itemgetText: ", "> " + item.getText());
-	                        Log.d("arrayItem: ", "> " + arrayItem);
-	                  
+	                       
 	                	}
 	                } catch (JSONException e) {
 	                    e.printStackTrace();
 	                }  
 	            } else {
-	                Log.e("ServiceHandler", "Couldn't get any data from the url");
-	            }
+	               }
 	            
 	            
 	            return null;    
@@ -345,9 +325,7 @@ public class ViewDetailFragment extends Activity {
 		    protected void onPostExecute(Void result) {
 		    
 		    	super.onPostExecute(result);
-		    	 Log.d("post execute jsonStr: ", "> " + jsonStr);
-                 
-                
+		      
 		    	customArrayAdapter.clear();
 		    	
 		    		if(jsonStr == null)

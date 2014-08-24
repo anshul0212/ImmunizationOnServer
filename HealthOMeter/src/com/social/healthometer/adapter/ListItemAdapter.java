@@ -46,10 +46,6 @@ public class ListItemAdapter extends BaseAdapter {
  ViewHolder v = new ViewHolder();
  public void setcheckbox() {
 
-    // Log.d("viewholser" + v, "checkbox" + v.selected);
-
-   //  v.selected.setVisibility(View.VISIBLE);
-
  }
  /* private view holder class */
  private class ViewHolder {

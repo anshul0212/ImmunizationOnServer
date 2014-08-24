@@ -1,10 +1,5 @@
 package com.social.healthometer;
 
-import java.util.Locale;
-
-import com.social.actionlisteners.ButtonClickListener;
-import com.social.utilities.Localization;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -12,9 +7,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
+
 
 public class SplashScreen extends Activity {
 	// Splash screen timer
@@ -44,10 +38,7 @@ public class SplashScreen extends Activity {
                   passKey= "false";
                   
                   passKey = SplashScreen.getDefaults("passKey" , getApplicationContext());
-                  
-          		Log.d("passKey= ",passKey);
-          		
-          		
+                 
           		if(passKey.contentEquals("0212")){
           			Intent i = new Intent(SplashScreen.this,MainMenuActivity.class);
           			startActivity(i);
